@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_Voltage"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Voltage" />
+        <item
+            android:id="@+id/nav_Current"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Current" />
+        <item
+            android:id="@+id/nav_Resistance"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Resistance" />
+        <item
+            android:id="@+id/nav_disconnect"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Disconnect" />
+    </group>
+
+</menu>
