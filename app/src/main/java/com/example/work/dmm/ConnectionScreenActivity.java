@@ -1,5 +1,6 @@
 package com.example.work.dmm;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -68,9 +69,9 @@ public class ConnectionScreenActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_Voltage) {
-            // Handle the camera action
+            Intent startVoltageActivity = new Intent(this,DCvoltageActivity.class);
+            startActivity(startVoltageActivity);
         } else if (id == R.id.nav_Current) {
 
         } else if (id == R.id.nav_Resistance) {

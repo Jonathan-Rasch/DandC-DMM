@@ -10,14 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.work.dmm.MainActivity">
 
-    <Button
-        android:text="Connect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/button" />
-
     <TextView
         android:text="Bluetooth status: "
         android:layout_width="wrap_content"
@@ -27,11 +19,20 @@
         android:id="@+id/textView4" />
 
     <TextView
-        android:text="OFF"
+        android:text="-"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:id="@+id/tv_bluetoothStatus" />
+
+    <Button
+        android:text="Connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_connect"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="onClick_connect" />
 
 </RelativeLayout>
