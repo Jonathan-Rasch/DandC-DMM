@@ -29,4 +29,20 @@
         android:layout_alignParentStart="true"
         android:id="@+id/textView6" />
 
+    <TextView
+        android:text="-"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/connectionScreen_device_name" />
+
+    <TextView
+        android:text="-"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/connectionScreen_device_name"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/connectionScreen_device_address" />
+
 </RelativeLayout>

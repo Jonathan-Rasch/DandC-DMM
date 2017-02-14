@@ -19,6 +19,10 @@ import java.util.UUID;
  */
 
 class clientBluetoothConnection extends Thread implements Serializable{
+    public BluetoothDevice getBluetoothDevice() {
+        return bluetoothDevice;
+    }
+
     private final BluetoothDevice bluetoothDevice;
     private final BluetoothSocket bluetoothSocket;
     private final BluetoothAdapter bluetoothAdapter;
@@ -30,6 +34,7 @@ class clientBluetoothConnection extends Thread implements Serializable{
     private Context main_context;
     private volatile Boolean connectionActive = false;
     private volatile int connection_state = 0;// 0:initializing;1:connected;-1:failed.
+
 
 
 
@@ -109,6 +114,8 @@ class clientBluetoothConnection extends Thread implements Serializable{
     void close_connection(){
         try {
             connectionActive = false;
+            inputStream.close();
+            outputStream.close();
             bluetoothSocket.close();
         } catch (IOException e) {
             e.printStackTrace();

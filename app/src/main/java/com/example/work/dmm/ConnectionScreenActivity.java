@@ -10,9 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class ConnectionScreenActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private BaseApplication base;
+    private TextView tv_device_address,tv_device_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,12 @@ public class ConnectionScreenActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        //getting views
+        base = (BaseApplication)getApplicationContext();
+        tv_device_address = (TextView)findViewById(R.id.connectionScreen_device_address);
+        tv_device_name = (TextView)findViewById(R.id.connectionScreen_device_name);
+        tv_device_address.setText(base.getDeviceAddress());
+        tv_device_name.setText(base.getDeviceName());
     }
 
     @Override
@@ -38,7 +48,8 @@ public class ConnectionScreenActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            base.drop_connection();
+            //super.onBackPressed();
         }
     }
 
