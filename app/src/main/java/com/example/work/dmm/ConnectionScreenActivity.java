@@ -1,6 +1,9 @@
 package com.example.work.dmm;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,7 +19,16 @@ public class ConnectionScreenActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private BaseApplication base;
-    private TextView tv_device_address,tv_device_name;
+    private TextView tv_device_address,tv_device_name,tv_received_data;
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (MessageCode.PARSED_DATA_VOLTAGE.equals(intent.getAction())) {
+                String message = intent.getStringExtra(MessageCode.PARSED_DATA_VOLTAGE);
+                tv_received_data.setText(tv_received_data.getText() + "\n" + message);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +46,17 @@ public class ConnectionScreenActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        //registering brodcast listener
+        IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_VOLTAGE);
+        registerReceiver(receiver,filter);
         //getting views
         base = (BaseApplication)getApplicationContext();
         tv_device_address = (TextView)findViewById(R.id.connectionScreen_device_address);
         tv_device_name = (TextView)findViewById(R.id.connectionScreen_device_name);
+        tv_received_data = (TextView)findViewById(R.id.tv_received_data);
         tv_device_address.setText(base.getDeviceAddress());
         tv_device_name.setText(base.getDeviceName());
+
     }
 
     @Override

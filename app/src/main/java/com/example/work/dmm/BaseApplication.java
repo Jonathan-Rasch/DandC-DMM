@@ -110,7 +110,9 @@ public class BaseApplication extends Application {
             //test if the message contains a closing tag (meaning message is complete)
             if (message.contains(">")){
                 Intent data_read = new Intent(MessageCode.PARSED_DATA_VOLTAGE);
-
+                data_read.putExtra(MessageCode.PARSED_DATA_VOLTAGE, current_message.toString());
+                //TODO do actual parsing before
+                sendBroadcast(data_read);
             }
         }
     }
