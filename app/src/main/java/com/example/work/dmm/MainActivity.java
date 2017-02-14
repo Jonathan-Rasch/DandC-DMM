@@ -65,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
             }else if (action.equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)){
                 base.ts("Starting device discovery...");
                 tv_bluetoothStatus.setText("Discovering...");
-
-                rippleBackground.startRippleAnimation();
             }
 
             /*detecting Bluetooth device broadcasts*/
@@ -112,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupBluetooth(){
+        rippleBackground.startRippleAnimation();
         //clearing text view that displays the discovered devices
         tv_discovered_devices.setText("");
         //close any existing connections
