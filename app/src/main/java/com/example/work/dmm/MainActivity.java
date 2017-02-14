@@ -11,10 +11,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.skyfishjy.library.RippleBackground;
 
 public class MainActivity extends AppCompatActivity {
+    //Ripple Effect for searching
+    private RippleBackground rippleBackground;
+
     //bluetooth adapter mac address
     private String adapter_address = "16:11:14:22:16:AB";
     //base application
@@ -60,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
             }else if (action.equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)){
                 base.ts("Starting device discovery...");
                 tv_bluetoothStatus.setText("Discovering...");
+
+                rippleBackground.startRippleAnimation();
             }
 
             /*detecting Bluetooth device broadcasts*/
@@ -71,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
                     if (device_address != null && device_address.equals(adapter_address)){
                         base.ts("Bluetooth device found: "+ device.getName());
                         base.start_connection(device);
+                        rippleBackground.stopRippleAnimation();
                     }
                 }
             }
@@ -86,6 +94,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         base = ((BaseApplication)this.getApplicationContext());
         setContentView(R.layout.activity_main);
+
+        //Get search animation reference
+        rippleBackground = (RippleBackground)findViewById(R.id.content);
+
         //getting the activity views:
         tv_bluetoothStatus = (TextView) findViewById(R.id.tv_bluetoothStatus);
         btn_connect = (Button) findViewById(R.id.btn_connect);

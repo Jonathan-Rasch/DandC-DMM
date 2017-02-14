@@ -81,10 +81,10 @@ class clientBluetoothConnection extends Thread implements Serializable{
                     buffer = new byte[1024];
                     number_of_bytes_read = inputStream.read(buffer);
                     if (number_of_bytes_read > 0){
-                        Intent read_data_Intnet = new Intent();
-                        read_data_Intnet.setAction(MessageCode.CUSTOM_ACTION_SERIAL);
-                        read_data_Intnet.putExtra(MessageCode.MSG_READ_DATA,buffer);
-                        main_context.sendBroadcast(read_data_Intnet);
+                        Intent read_data_Intent = new Intent();
+                        read_data_Intent.setAction(MessageCode.CUSTOM_ACTION_SERIAL);
+                        read_data_Intent.putExtra(MessageCode.MSG_READ_DATA,buffer);
+                        main_context.sendBroadcast(read_data_Intent);
                     }
                 }
             } catch (IOException e) {
