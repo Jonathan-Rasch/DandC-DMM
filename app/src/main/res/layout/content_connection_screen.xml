@@ -29,4 +29,30 @@
         android:layout_alignParentStart="true"
         android:id="@+id/textView6" />
 
+    <TextView
+        android:text="-"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/connectionScreen_device_name" />
+
+    <TextView
+        android:text="-"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/connectionScreen_device_name"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/connectionScreen_device_address" />
+
+    <TextView
+        android:text="received_data"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#000000"
+        android:textColor="#ff0000"
+        android:layout_below="@+id/textView6"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/tv_received_data" />
+
 </RelativeLayout>

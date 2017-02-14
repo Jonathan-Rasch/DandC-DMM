@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private RippleBackground rippleBackground;
 
     //bluetooth adapter mac address
-    private String adapter_address = "16:11:14:22:16:AB";
+    private String adapter_address = "98:D3:31:40:19:31";
     //base application
     private BaseApplication base;
     // the device bluetooth adapter
