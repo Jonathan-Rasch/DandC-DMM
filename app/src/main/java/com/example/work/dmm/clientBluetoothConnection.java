@@ -10,6 +10,7 @@ import android.os.Message;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.UUID;
 
 
@@ -17,7 +18,7 @@ import java.util.UUID;
  * Created by Work on 28/01/2017.
  */
 
-class clientBluetoothConnection extends Thread {
+class clientBluetoothConnection extends Thread implements Serializable{
     private final BluetoothDevice bluetoothDevice;
     private final BluetoothSocket bluetoothSocket;
     private final BluetoothAdapter bluetoothAdapter;
@@ -26,23 +27,22 @@ class clientBluetoothConnection extends Thread {
     private OutputStream outputStream;
     private byte[] buffer;//input stream buffer.
     private byte[] writeBuffer;
-    private android.os.Handler messageHandler;
     private Context main_context;
-    private volatile Boolean connectionActive = true;
+    private volatile Boolean connectionActive = false;
+    private volatile int connection_state = 0;// 0:initializing;1:connected;-1:failed.
 
 
 
-    clientBluetoothConnection(BluetoothDevice bluetoothDevice, BluetoothAdapter bluetoothAdapter, Handler handler, Context context) {
+    clientBluetoothConnection(BluetoothDevice bluetoothDevice, BluetoothAdapter bluetoothAdapter, Context context) {
         this.bluetoothDevice = bluetoothDevice;
         this.bluetoothAdapter = bluetoothAdapter;
-        messageHandler = handler;
+
         main_context=context;
         BluetoothSocket temp_socket;
         try{
             temp_socket = (BluetoothSocket) bluetoothDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class}).invoke(this.bluetoothDevice,1);
         }catch (Exception e) {
             bluetoothSocket = null;
-            messageHandler.obtainMessage(MessageCode.MSG_SOCKET_RFCOM_FAILED, e).sendToTarget();
             return;
         }
         bluetoothSocket = temp_socket;
@@ -58,30 +58,32 @@ class clientBluetoothConnection extends Thread {
             bluetoothSocket.connect();
         } catch (IOException e) {
             //connection failed
-            messageHandler.obtainMessage(MessageCode.MSG_SOCKET_CONNECTION_FAILED,e).sendToTarget();
             e.printStackTrace();
+            connection_state = -1;
             close_connection();
             return;
         }
         try {
             inputStream = bluetoothSocket.getInputStream();
             outputStream = bluetoothSocket.getOutputStream();
+            connectionActive = true;
         } catch (IOException e) {
             e.printStackTrace();
+            connection_state = -1;
         }
         //connection established, start reading input
+        connection_state = 1;
         int number_of_bytes_read;
         while(connectionActive){
-            //read from the stream, will block thread until data received
             try {
                 //see if there is data to be read
-                if (inputStream.available() > 0){
+                if (inputStream.available() > 0){//read from the stream, will block thread until data received
                     buffer = new byte[1024];
                     number_of_bytes_read = inputStream.read(buffer);
                     if (number_of_bytes_read > 0){
                         Intent read_data_Intnet = new Intent();
                         read_data_Intnet.setAction(MessageCode.CUSTOM_ACTION_SERIAL);
-                        read_data_Intnet.putExtra("read_data",buffer);
+                        read_data_Intnet.putExtra(MessageCode.MSG_READ_DATA,buffer);
                         main_context.sendBroadcast(read_data_Intnet);
                     }
                 }
@@ -121,6 +123,14 @@ class clientBluetoothConnection extends Thread {
             bool_data_to_write = true;
         }
         return true;
+    }
+
+    public boolean isConnectionActive(){
+        return bluetoothSocket.isConnected();
+    }
+
+    public int get_connection_state(){
+        return connection_state;
     }
 
 }

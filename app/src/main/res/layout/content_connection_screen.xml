@@ -13,4 +13,20 @@
     tools:context="com.example.work.dmm.ConnectionScreenActivity"
     tools:showIn="@layout/app_bar_connection_screen">
 
+    <TextView
+        android:text="Device Name:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/textView5" />
+
+    <TextView
+        android:text="Address:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView5"
+        android:layout_alignParentStart="true"
+        android:id="@+id/textView6" />
+
 </RelativeLayout>

@@ -35,4 +35,11 @@
         android:layout_centerHorizontal="true"
         android:onClick="onClick_connect" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView4"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/tv_discovered_devices" />
+
 </RelativeLayout>

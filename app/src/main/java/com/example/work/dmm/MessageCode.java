@@ -5,7 +5,7 @@ package com.example.work.dmm;
  */
 
 abstract class MessageCode {
-    public static final int MSG_READ_DATA = 1;
+    public static final String MSG_READ_DATA = "READ_DATA";
     public static final int MSG_SOCKET_CONNECTION_FAILED = -1;
     public static final int MSG_SOCKET_RFCOM_FAILED = -2;
     public static final String CUSTOM_ACTION_SERIAL = "CUSTOM_ACTION_SERIAL";
