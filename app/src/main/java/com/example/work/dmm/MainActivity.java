@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
             if (action.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)){
                 base.ts("Discovery finished.");
                 btn_connect.setEnabled(true);
+                rippleBackground.stopRippleAnimation();
                 if (blueAdapter.isEnabled()){
                     tv_bluetoothStatus.setText("ON");
                 }else{
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     if (device_address != null && device_address.equals(adapter_address)){
                         base.ts("Bluetooth device found: "+ device.getName());
                         base.start_connection(device);
-                        rippleBackground.stopRippleAnimation();
+
                     }
                 }
             }
@@ -122,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         if(blueAdapter == null){
             base.ts("ERROR: no bluetooth adapter found.");
             tv_bluetoothStatus.setText("ERROR: No adapter found.");
+            rippleBackground.stopRippleAnimation();
         }else if(!blueAdapter.isEnabled()){//adapter found, but is it enabled ?
             //bluetooth is off, ask user to switch it on
             base.ts("Bluetooth disabled, please enable bluetooth");
@@ -146,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
                     setupBluetooth();
                 }else {//Resuest canceled.
                     base.ts("Enabeling Bluetooth FAILED");
+                    rippleBackground.stopRippleAnimation();
                     tv_bluetoothStatus.setText("OFF");
                     btn_connect.setEnabled(true);//allow the user to restart bluetooth setup
                 }
