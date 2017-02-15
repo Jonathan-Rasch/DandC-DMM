@@ -45,14 +45,29 @@
         android:layout_alignParentEnd="true"
         android:id="@+id/connectionScreen_device_address" />
 
-    <TextView
-        android:text="received_data"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="#000000"
-        android:textColor="#ff0000"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/textView6"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/tv_received_data" />
+        android:background="#000000"
+        style="@android:style/Widget.Material.ScrollView"
+        android:onClick="onClick_ScrollView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:text="received_data"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:background="#000000"
+                android:textColor="#ff0000"
+                android:layout_below="@+id/textView6"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/tv_received_data" />
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

@@ -13,7 +13,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
+
+import java.util.LinkedList;
 
 public class ConnectionScreenActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -25,10 +29,32 @@ public class ConnectionScreenActivity extends AppCompatActivity
         public void onReceive(Context context, Intent intent) {
             if (MessageCode.PARSED_DATA_VOLTAGE.equals(intent.getAction())) {
                 String message = intent.getStringExtra(MessageCode.PARSED_DATA_VOLTAGE);
-                tv_received_data.setText(tv_received_data.getText() + "\n" + message);
+                displayReceivedPacket(message);
             }
         }
     };
+
+    private LinkedList<String> message_list = new LinkedList<>();
+    private static final int CONSOL_BUFFER_SIZE = 200; // how many entries the consol holds
+    private void displayReceivedPacket(String message){
+        message_list.addFirst(message+"\n");
+        //check if list contains more elements than allowed by the buffer size, and remove last if needed
+        if (message_list.size()>= CONSOL_BUFFER_SIZE){
+            message_list.removeLast();
+        }
+        // build string to assign to textview:
+        StringBuilder local_stringBuilder = new StringBuilder("");
+        for (int i=message_list.size();i>0;--i){//reversing order
+            local_stringBuilder.append(message_list.get(i));
+        }
+        //now update the text view
+        tv_received_data.setText(local_stringBuilder.toString());
+    }
+
+    public void onClick_ScrollView(View view){
+        //scroll to the bottom to see newest entries on click
+        ((ScrollView)view).fullScroll(view.FOCUS_DOWN);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +82,6 @@ public class ConnectionScreenActivity extends AppCompatActivity
         tv_received_data = (TextView)findViewById(R.id.tv_received_data);
         tv_device_address.setText(base.getDeviceAddress());
         tv_device_name.setText(base.getDeviceName());
-
     }
 
     @Override
