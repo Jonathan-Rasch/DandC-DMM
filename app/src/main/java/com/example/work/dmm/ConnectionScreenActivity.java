@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.LinkedList;
@@ -35,20 +36,22 @@ public class ConnectionScreenActivity extends AppCompatActivity
     };
 
     private LinkedList<String> message_list = new LinkedList<>();
-    private static final int CONSOL_BUFFER_SIZE = 200; // how many entries the consol holds
+    private static final int CONSOL_BUFFER_SIZE = 50; // how many entries the consol holds
     private void displayReceivedPacket(String message){
-        message_list.addFirst(message+"\n");
-        //check if list contains more elements than allowed by the buffer size, and remove last if needed
-        if (message_list.size()>= CONSOL_BUFFER_SIZE){
-            message_list.removeLast();
+        if (consolEnabled) {
+            message_list.addFirst(message);
+            //check if list contains more elements than allowed by the buffer size, and remove last if needed
+            if (message_list.size()>= CONSOL_BUFFER_SIZE){
+                message_list.removeLast();
+            }
+            // build string to assign to textview:
+            StringBuilder local_stringBuilder = new StringBuilder("");
+            for (int i=message_list.size()-1;i>0;--i){//reversing order
+                local_stringBuilder.append(message_list.get(i));
+            }
+            //now update the text view
+            tv_received_data.setText(local_stringBuilder.toString());
         }
-        // build string to assign to textview:
-        StringBuilder local_stringBuilder = new StringBuilder("");
-        for (int i=message_list.size();i>0;--i){//reversing order
-            local_stringBuilder.append(message_list.get(i));
-        }
-        //now update the text view
-        tv_received_data.setText(local_stringBuilder.toString());
     }
 
     public void onClick_ScrollView(View view){
@@ -91,7 +94,10 @@ public class ConnectionScreenActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             base.drop_connection();
-            //super.onBackPressed();
+            this.unregisterReceiver(receiver);
+            Intent startMainScreen = new Intent(getApplicationContext(),MainActivity.class);
+            startActivity(startMainScreen);
+            finish();
         }
     }
 
@@ -137,5 +143,10 @@ public class ConnectionScreenActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private boolean consolEnabled = false;
+    public void onClick_displayConsolSwitch(View view){
+        consolEnabled = ((Switch)view).isChecked();
     }
 }

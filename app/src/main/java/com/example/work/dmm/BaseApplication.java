@@ -26,14 +26,9 @@ public class BaseApplication extends Application {
             if (action != null) {
                 switch (action){
                     case BluetoothDevice.ACTION_ACL_CONNECTED:
-                        Intent startConnectionScreen = new Intent(getApplicationContext(),ConnectionScreenActivity.class);
-                        startConnectionScreen.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(startConnectionScreen);
                         break;
                     case BluetoothDevice.ACTION_ACL_DISCONNECTED:
-                        Intent startMainScreen = new Intent(getApplicationContext(),MainActivity.class);
-                        startMainScreen.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(startMainScreen);
+                        connection_in_Progress = false;
                         break;
                     case MessageCode.CUSTOM_ACTION_SERIAL:
                         byte[] buffer = new byte[1024];
@@ -72,23 +67,19 @@ public class BaseApplication extends Application {
     public void setBluetoothAdapter(BluetoothAdapter adapter){
         this.blueAdapter = adapter;
     }
-
-    public Boolean start_connection(BluetoothDevice device){
-        if (blueAdapter != null && blueAdapter.isEnabled()) {
+    //to prevent trying to start two connections (sometimes device discovery finds device twice)
+    private boolean connection_in_Progress = false;
+    public void start_connection(BluetoothDevice device){
+        this.drop_connection();
+        if (blueAdapter != null && blueAdapter.isEnabled() && !connection_in_Progress) {
+            connection_in_Progress = true;
             connection = new clientBluetoothConnection(device,blueAdapter,getApplicationContext());
             connection.start();
-            while(connection.get_connection_state() == 0){}//TODO fix this ugly mess
-            if (connection.get_connection_state() == 1){
-                return true;//connection made
-            }else{
-                connection.close_connection();
-            }
         }
-        return false;
     }
 
     public void drop_connection(){
-        if (connection != null){
+        if (connection != null && connection.isConnectionActive()){
             t("Dropping connection...");
             connection.close_connection();
         }
@@ -133,6 +124,10 @@ public class BaseApplication extends Application {
             return connection.getBluetoothDevice().getAddress();
         }
         return "";
+    }
+
+    public boolean get_connection_in_Progress(){
+        return connection_in_Progress;
     }
 
     public void t(String text){

@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -74,10 +75,15 @@ public class MainActivity extends AppCompatActivity {
                 if (device != null) {
                     String device_address = device.getAddress();
                     tv_discovered_devices.setText(tv_discovered_devices.getText()+"\n"+device.getName()+" "+device_address);
-                    if (device_address != null && device_address.equals(adapter_address)){
+                    if (device_address != null && device_address.equals(adapter_address) && !base.get_connection_in_Progress()){
                         base.ts("Bluetooth device found: "+ device.getName());
                         base.start_connection(device);
-
+                        //start connection screen activity
+                        Intent startConnectionScreen = new Intent(getApplicationContext(),ConnectionScreenActivity.class);
+                        startActivity(startConnectionScreen);
+                        unregisterReceiver(receiver);
+                        finish();
+                        Log.e("tag","CONNECTION STARTED");
                     }
                 }
             }
@@ -156,6 +162,13 @@ public class MainActivity extends AppCompatActivity {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        unregisterReceiver(receiver);
+        finish();
+        super.onBackPressed();
     }
 
     public void onClick_connect(View view){

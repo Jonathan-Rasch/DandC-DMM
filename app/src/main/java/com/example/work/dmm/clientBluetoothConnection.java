@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.os.ParcelUuid;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,9 +25,9 @@ class clientBluetoothConnection extends Thread implements Serializable{
         return bluetoothDevice;
     }
 
-    private final BluetoothDevice bluetoothDevice;
-    private final BluetoothSocket bluetoothSocket;
-    private final BluetoothAdapter bluetoothAdapter;
+    private  BluetoothDevice bluetoothDevice;
+    private  BluetoothSocket bluetoothSocket;
+    private  BluetoothAdapter bluetoothAdapter;
     private volatile boolean bool_data_to_write;
     private InputStream inputStream;
     private OutputStream outputStream;
@@ -33,9 +35,6 @@ class clientBluetoothConnection extends Thread implements Serializable{
     private byte[] writeBuffer;
     private Context main_context;
     private volatile Boolean connectionActive = false;
-    private volatile int connection_state = 0;// 0:initializing;1:connected;-1:failed.
-
-
 
 
     clientBluetoothConnection(BluetoothDevice bluetoothDevice, BluetoothAdapter bluetoothAdapter, Context context) {
@@ -46,6 +45,9 @@ class clientBluetoothConnection extends Thread implements Serializable{
         BluetoothSocket temp_socket;
         try{
             temp_socket = (BluetoothSocket) bluetoothDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class}).invoke(this.bluetoothDevice,1);
+            //ParcelUuid[] uuids = bluetoothDevice.getUuids();
+            //UUID uuid = uuids[0].getUuid();
+            //temp_socket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
         }catch (Exception e) {
             bluetoothSocket = null;
             return;
@@ -64,8 +66,6 @@ class clientBluetoothConnection extends Thread implements Serializable{
         } catch (IOException e) {
             //connection failed
             e.printStackTrace();
-            connection_state = -1;
-            close_connection();
             return;
         }
         try {
@@ -74,10 +74,9 @@ class clientBluetoothConnection extends Thread implements Serializable{
             connectionActive = true;
         } catch (IOException e) {
             e.printStackTrace();
-            connection_state = -1;
+            return;
         }
         //connection established, start reading input
-        connection_state = 1;
         int number_of_bytes_read;
         while(connectionActive){
             try {
@@ -104,22 +103,29 @@ class clientBluetoothConnection extends Thread implements Serializable{
                 bool_data_to_write = false;
             }
         }
-
+        try {
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            bluetoothSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Connection Management, and writing to other device [this will run in UI thread when called]
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void close_connection(){
-        try {
-            connectionActive = false;
-            inputStream.close();
-            outputStream.close();
-            bluetoothSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void close_connection(){
+        connectionActive = false;
     }
 
     public boolean write(byte[] msg_data){
@@ -136,8 +142,5 @@ class clientBluetoothConnection extends Thread implements Serializable{
         return bluetoothSocket.isConnected();
     }
 
-    public int get_connection_state(){
-        return connection_state;
-    }
 
 }
