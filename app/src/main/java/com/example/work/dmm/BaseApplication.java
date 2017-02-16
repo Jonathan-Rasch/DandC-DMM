@@ -90,26 +90,23 @@ public class BaseApplication extends Application {
         if (buffer != null) {
             String current_message = new String(buffer);
             if (validate_message(current_message)){
-                Intent data_read = new Intent(MessageCode.PARSED_DATA_VOLTAGE);
-                data_read.putExtra(MessageCode.PARSED_DATA_VOLTAGE, current_message.toString());
-                //TODO do actual parsing before
-                sendBroadcast(data_read);
+                parse_and_send(current_message);
             }
         }
     }
 
-    //determines if the message is valid, and returns the message type (voltage,current,range,etc)
+    //determines if the message is valid
     private boolean validate_message(String message){
         int tags = 0;
         //check tag number and position
         for (int i=0;i<message.toCharArray().length;i++) {
             char c = message.charAt(i);
             if (i == 0 && c != '<'){
-                Log.e("validate_message","no opening tag at message start:"+message);
+                Log.e("validate_message","no opening tag at message start: "+message);
                 return false;
             }
             if (i == message.length()-1 && c != '>'){
-                Log.e("validate_message","no closing tag at message end:"+message);
+                Log.e("validate_message","no closing tag at message end: "+message);
                 return false;
             }
             //counting number of tags
@@ -118,10 +115,55 @@ public class BaseApplication extends Application {
             }
         }
         if (tags != 2){
-            Log.e("validate_message","incorrect number of opening/closing tags in message:"+message);
+            Log.e("validate_message","incorrect number of opening/closing tags in message: "+message);
+            return false;
+        }
+        if (!message.contains("m:") || !message.contains(";v:") /*|| !message.contains(";r:")*/){
+            Log.e("validate_message","message missing component: "+message);
             return false;
         }
         return true;
+    }
+
+    /*
+    Parses the string received from the connection class and determines to what activity
+    to send the data.
+     */
+    private void parse_and_send(String data){
+        int mode = 0;
+        String mode_string = data.substring(data.indexOf("<m:")+3,data.indexOf(";v:"));
+        try {
+            mode = Integer.parseInt(mode_string);
+        } catch (NumberFormatException e) {
+            Log.e("parse_and_send","could not parse mode from message: "+data);
+            return;
+        }
+        float value = 0;
+        String value_string = data.substring(data.indexOf(";v:")+3,data.indexOf(">"));//TODO adjust for range message !
+        try {
+            value = Float.parseFloat(value_string);
+        } catch (NumberFormatException e) {
+            Log.e("parse_and_send","could not parse value from message: "+data);
+            return;
+        }
+        //TODO parse range
+        //sending message to relevant activity:
+        Intent intent_to_send;
+        switch (mode){
+            case 1://DC voltage
+                intent_to_send = new Intent(MessageCode.PARSED_DATA_DC_VOLTAGE);
+                intent_to_send.putExtra(MessageCode.VALUE,value);
+                //TODO add range
+                sendBroadcast(intent_to_send);
+                break;
+            case 2://DC current
+                break;
+            case 3://resistance
+                break;
+            default:
+                Log.e("parse_and_send","invalid mode: "+mode);
+                break;
+        }
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

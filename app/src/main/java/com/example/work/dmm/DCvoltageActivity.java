@@ -1,5 +1,9 @@
 package com.example.work.dmm;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +28,25 @@ public class DCvoltageActivity extends AppCompatActivity {
     private LineChart loggingLineChart;
     private Button logVoltageButton;
     boolean isLogging = false;
+    private ColorArcProgressBar voltageGauge;
+    private float voltage=0;
+    private ArrayList<Entry> entry_list = new ArrayList<Entry>();
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction() == MessageCode.PARSED_DATA_DC_VOLTAGE) {
+                voltage = intent.getFloatExtra(MessageCode.VALUE,0f);
+                voltageGauge.setCurrentValues(voltage);
+                if (isLogging) {
+                    Entry e =new Entry((float)entry_list.size(),voltage);
+                    entry_list.add(e);
+                    if(entry_list.size()>0){
+                        genChart();
+                    }
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +54,14 @@ public class DCvoltageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dcvoltage);
 
         //Voltage Gauge
-        ColorArcProgressBar voltageGauge = (ColorArcProgressBar) findViewById(R.id.voltageGauge);
+        voltageGauge = (ColorArcProgressBar) findViewById(R.id.voltageGauge);
         voltageGauge.setDiameter(200);
-        voltageGauge.setCurrentValues(100);
+        voltageGauge.setCurrentValues(0);
+        voltageGauge.setMaxValues(10);
+
+        //Broadcast receiver and filter
+        IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
+        registerReceiver(receiver,filter);
 
         //Line Chart
         loggingLineChart = (LineChart) findViewById(R.id.loggingLineChart);
@@ -59,19 +87,18 @@ public class DCvoltageActivity extends AppCompatActivity {
 
     private void toggleLogging(){
         //Hide appropriate UI elements within this method when not logging
-        if(isLogging) {
-            genChart();
+        if(!isLogging) {
+            entry_list = new ArrayList<Entry>();
             loggingLineChart.setVisibility(View.VISIBLE);
         } else{
             loggingLineChart.setVisibility(View.INVISIBLE);
         }
-
         isLogging = !isLogging;
     }
 
     private void genChart() {
         //Generate new dataset
-        List<Entry> entries = dataGenerator();
+        List<Entry> entries = entry_list;
         LineDataSet dataSet = new LineDataSet(entries, "Shitty Point Data"); // add entries to dataset
         dataSet.setColor(ColorTemplate.COLORFUL_COLORS[1]);
         dataSet.setValueTextColor(Color.BLACK);
@@ -79,37 +106,7 @@ public class DCvoltageActivity extends AppCompatActivity {
 
         loggingLineChart.setData(lineData);
         loggingLineChart.invalidate(); // refresh
-
         loggingLineChart.notifyDataSetChanged();//Causes redraw when we add data. I imagine we'll initiate
     }
 
-    private List<Entry> dataGenerator(){
-        Point[] pointArray = new Point[100];
-
-        //Generate Garbage data
-        for(int i = 0; i < pointArray.length; i++){
-            pointArray[i] = new Point(i, randInt(0, 420));
-        }
-
-        List<Entry> entries = new ArrayList<Entry>();
-
-        //Convert into entries for storage in chart
-        for (Point data : pointArray) {
-            // turn data into Entry objects
-            entries.add(new Entry(data.x, data.y));
-        }
-
-        return entries;
-    }
-
-    public static int randInt(int min, int max) {
-        // Usually this can be a field rather than a method variable
-        Random rand = new Random();
-
-        // nextInt is normally exclusive of the top value,
-        // so add 1 to make it inclusive
-        int randomNum = rand.nextInt((max - min) + 1) + min;
-
-        return randomNum;
-    }
 }

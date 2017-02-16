@@ -147,7 +147,6 @@ class clientBluetoothConnection extends Thread implements Serializable{
             read_data_Intent.putExtra(MessageCode.MSG_READ_DATA,data);
             read_data_Intent.putExtra(MessageCode.MSG_READ_DATA_SIZE,size);
             main_context.sendBroadcast(read_data_Intent);
-            Log.d("message sent:",new String(data));
         }
     }
 
@@ -185,7 +184,7 @@ class clientBluetoothConnection extends Thread implements Serializable{
                             break;
                         }else {
                             //prevent non ASCII characters from being added to message
-                            if(local_buffer[i] >= 32 && local_buffer[i] <= 126) {
+                            if(local_buffer[i] >= 33 && local_buffer[i] <= 126) {
                                 message[message_index] = local_buffer[i];
                             }else{
                                 message_index--;
@@ -215,7 +214,7 @@ class clientBluetoothConnection extends Thread implements Serializable{
                         break;
                     }else{
                         //prevent non ASCII characters from being added to message
-                        if(local_buffer[i] >= 32 && local_buffer[i] <= 126) {
+                        if(local_buffer[i] >= 33 && local_buffer[i] <= 126) {
                             message[message_index] = local_buffer[i];
                         }else{
                             message_index--;
