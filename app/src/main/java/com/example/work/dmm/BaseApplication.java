@@ -7,8 +7,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 
 /**
@@ -100,12 +100,43 @@ public class BaseApplication extends Application {
             }
             //test if the message contains a closing tag (meaning message is complete)
             if (message.contains(">")){
+                validate_message(message);
+
+                //determine message type
+
                 Intent data_read = new Intent(MessageCode.PARSED_DATA_VOLTAGE);
                 data_read.putExtra(MessageCode.PARSED_DATA_VOLTAGE, current_message.toString());
                 //TODO do actual parsing before
                 sendBroadcast(data_read);
             }
         }
+    }
+
+    //determines if the message is valid, and returns the message type (voltage,current,range,etc)
+    private int validate_message(String message){
+        int tags = 0;
+        int message_type = -1;
+        //check tag number and position
+        for (int i=0;i<message.toCharArray().length;i++) {
+            char c = message.charAt(i);
+            if (i == 0 && c != '<'){
+                Log.e("validate_message","no opening tag at message start");
+                return -1;
+            }
+            if (i == message.length()-1 && c != '>'){
+                Log.e("validate_message","no closing tag at message end");
+                return -1;
+            }
+            //counting number of tags
+            if (c == '>' || c == '<'){
+                tags += 1;
+            }
+        }
+        if (tags != 2){
+            Log.e("validate_message","incorrect number of opening/closing tags in message");
+            return -1;
+        }
+        return message_type;
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
