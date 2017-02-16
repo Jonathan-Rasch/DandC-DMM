@@ -32,6 +32,14 @@ public class BaseApplication extends Application {
                         break;
                     case MessageCode.CUSTOM_ACTION_SERIAL:
                         parse_read_data(intent.getByteArrayExtra(MessageCode.MSG_READ_DATA));
+                        break;
+                    case MessageCode.DMM_CHANGE_MODE_REQUEST:
+                        int mode= intent.getIntExtra(MessageCode.MODE,-1);
+                        if (mode != -1) {
+                            String message = "<m:"+String.valueOf(mode)+">";
+                            connection.write(message.getBytes());
+                            Log.e("wrote:",message);
+                        }
                     default:
                         break;
                 }
@@ -56,6 +64,7 @@ public class BaseApplication extends Application {
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
         filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         filter.addAction(MessageCode.CUSTOM_ACTION_SERIAL);
+        filter.addAction(MessageCode.DMM_CHANGE_MODE_REQUEST);
         this.registerReceiver(receiver,filter);
     }
 
@@ -150,15 +159,15 @@ public class BaseApplication extends Application {
         //sending message to relevant activity:
         Intent intent_to_send;
         switch (mode){
-            case 1://DC voltage
+            case MessageCode.DC_VOLTAGE_MODE:
                 intent_to_send = new Intent(MessageCode.PARSED_DATA_DC_VOLTAGE);
                 intent_to_send.putExtra(MessageCode.VALUE,value);
                 //TODO add range
                 sendBroadcast(intent_to_send);
                 break;
-            case 2://DC current
+            case MessageCode.DC_CURRENT_MODE://DC current
                 break;
-            case 3://resistance
+            case MessageCode.RESISTANCE_MODE://resistance
                 break;
             default:
                 Log.e("parse_and_send","invalid mode: "+mode);

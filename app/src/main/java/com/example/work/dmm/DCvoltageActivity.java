@@ -44,6 +44,10 @@ public class DCvoltageActivity extends AppCompatActivity {
                         genChart();
                     }
                 }
+            }else{//inside voltage activity but received resistance packet. send change mode packet
+                Intent change_mode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
+                change_mode.putExtra(MessageCode.MODE,MessageCode.DC_VOLTAGE_MODE);
+                sendBroadcast(change_mode);
             }
         }
     };
@@ -61,6 +65,8 @@ public class DCvoltageActivity extends AppCompatActivity {
 
         //Broadcast receiver and filter
         IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
+        filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
+        filter.addAction(MessageCode.PARSED_DATA_RESISTANCE);
         registerReceiver(receiver,filter);
 
         //Line Chart

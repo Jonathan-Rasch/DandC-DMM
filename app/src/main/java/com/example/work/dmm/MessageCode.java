@@ -7,6 +7,15 @@ package com.example.work.dmm;
 abstract class MessageCode {
     public static final String MSG_READ_DATA = "READ_DATA";
     public static final String PARSED_DATA_DC_VOLTAGE = "PARSED_DATA_DC_VOLTAGE";
+    public static final String PARSED_DATA_DC_CURRENT = "PARSED_DATA_DC_CURRENT";
+    public static final String PARSED_DATA_RESISTANCE = "PARSED_DATA_RESISTANCE";
+
+    public static final String DMM_CHANGE_MODE_REQUEST = "DMM_CHANGE_MODE_REQUEST";
+    public static final String MODE = "MODE";
+    public static final int DC_VOLTAGE_MODE = 1;
+    public static final int DC_CURRENT_MODE = 2;
+    public static final int RESISTANCE_MODE = 3;
+
     public static final int MSG_SOCKET_CONNECTION_FAILED = -1;
     public static final int MSG_SOCKET_RFCOM_FAILED = -2;
     public static final String CUSTOM_ACTION_SERIAL = "CUSTOM_ACTION_SERIAL";
