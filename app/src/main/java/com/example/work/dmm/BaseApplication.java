@@ -31,9 +31,7 @@ public class BaseApplication extends Application {
                         connection_in_Progress = false;
                         break;
                     case MessageCode.CUSTOM_ACTION_SERIAL:
-                        byte[] buffer = new byte[1024];
-                        buffer = intent.getByteArrayExtra(MessageCode.MSG_READ_DATA);
-                        parse_read_data(buffer);
+                        parse_read_data(intent.getByteArrayExtra(MessageCode.MSG_READ_DATA));
                     default:
                         break;
                 }
@@ -88,22 +86,10 @@ public class BaseApplication extends Application {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Data processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-    private StringBuilder current_message;//holds the message that is currently being put together
-
     private void parse_read_data(byte[] buffer) {
-        String message = new String(buffer);
         if (buffer != null) {
-            if (message.contains("<")){
-                current_message = new StringBuilder(message);//clearing the current message string so the next one can be put together
-            }else{
-                current_message.append(message);
-            }
-            //test if the message contains a closing tag (meaning message is complete)
-            if (message.contains(">")){
-                validate_message(message);
-
-                //determine message type
-
+            String current_message = new String(buffer);
+            if (validate_message(current_message)){
                 Intent data_read = new Intent(MessageCode.PARSED_DATA_VOLTAGE);
                 data_read.putExtra(MessageCode.PARSED_DATA_VOLTAGE, current_message.toString());
                 //TODO do actual parsing before
@@ -113,19 +99,18 @@ public class BaseApplication extends Application {
     }
 
     //determines if the message is valid, and returns the message type (voltage,current,range,etc)
-    private int validate_message(String message){
+    private boolean validate_message(String message){
         int tags = 0;
-        int message_type = -1;
         //check tag number and position
         for (int i=0;i<message.toCharArray().length;i++) {
             char c = message.charAt(i);
             if (i == 0 && c != '<'){
-                Log.e("validate_message","no opening tag at message start");
-                return -1;
+                Log.e("validate_message","no opening tag at message start:"+message);
+                return false;
             }
             if (i == message.length()-1 && c != '>'){
-                Log.e("validate_message","no closing tag at message end");
-                return -1;
+                Log.e("validate_message","no closing tag at message end:"+message);
+                return false;
             }
             //counting number of tags
             if (c == '>' || c == '<'){
@@ -133,10 +118,10 @@ public class BaseApplication extends Application {
             }
         }
         if (tags != 2){
-            Log.e("validate_message","incorrect number of opening/closing tags in message");
-            return -1;
+            Log.e("validate_message","incorrect number of opening/closing tags in message:"+message);
+            return false;
         }
-        return message_type;
+        return true;
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
