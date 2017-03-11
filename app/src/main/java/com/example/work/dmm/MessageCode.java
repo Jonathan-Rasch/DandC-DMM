@@ -5,10 +5,12 @@ package com.example.work.dmm;
  */
 
 abstract class MessageCode {
+    /*message codes for sending the received data to the relevant activity (ie voltage or current)*/
     public static final String MSG_READ_DATA = "READ_DATA";
     public static final String PARSED_DATA_DC_VOLTAGE = "PARSED_DATA_DC_VOLTAGE";
     public static final String PARSED_DATA_DC_CURRENT = "PARSED_DATA_DC_CURRENT";
     public static final String PARSED_DATA_RESISTANCE = "PARSED_DATA_RESISTANCE";
+    public static final String ERROR = "ERROR";
 
     public static final String DMM_CHANGE_MODE_REQUEST = "DMM_CHANGE_MODE_REQUEST";
     public static final String MODE = "MODE";

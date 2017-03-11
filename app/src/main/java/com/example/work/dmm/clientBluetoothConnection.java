@@ -18,6 +18,7 @@ import java.io.Serializable;
  */
 
 class clientBluetoothConnection extends Thread implements Serializable{
+    public static final String TAG = "Connection";
     public BluetoothDevice getBluetoothDevice() {
         return bluetoothDevice;
     }
@@ -74,7 +75,8 @@ class clientBluetoothConnection extends Thread implements Serializable{
         while(connectionActive){
             try {
                 //see if there is data to be read
-                if (inputStream.available() > 0){//read from the stream, will block thread until data received
+                if (inputStream.available() > 0){
+                    //read from the stream, will block thread until data received
                     buffer = new byte[1024];
                     number_of_bytes_read = inputStream.read(buffer);
                     parse_and_send(buffer);
@@ -118,6 +120,7 @@ class clientBluetoothConnection extends Thread implements Serializable{
 
     public boolean write(byte[] msg_data){
         if(bool_data_to_write){
+            Log.e(TAG,"Thread busy, msg not sent.");
             return false;//busy
         }else{
             writeBuffer = msg_data;
@@ -226,6 +229,4 @@ class clientBluetoothConnection extends Thread implements Serializable{
             }
         }
     }
-
-
 }

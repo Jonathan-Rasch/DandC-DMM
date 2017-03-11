@@ -35,6 +35,7 @@ public class DCvoltageActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() == MessageCode.PARSED_DATA_DC_VOLTAGE) {
+                /*CODE FOR LOGGING AND PROCESSING DATA GOES HERE*/
                 voltage = intent.getFloatExtra(MessageCode.VALUE,0f);
                 voltageGauge.setCurrentValues(voltage);
                 if (isLogging) {
@@ -44,7 +45,7 @@ public class DCvoltageActivity extends AppCompatActivity {
                         genChart();
                     }
                 }
-            }else{//inside voltage activity but received resistance packet. send change mode packet
+            }else{//inside voltage activity but received wrong packet. send change mode packet
                 Intent change_mode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
                 change_mode.putExtra(MessageCode.MODE,MessageCode.DC_VOLTAGE_MODE);
                 sendBroadcast(change_mode);
@@ -105,6 +106,10 @@ public class DCvoltageActivity extends AppCompatActivity {
     private void genChart() {
         //Generate new dataset
         List<Entry> entries = entry_list;
+        //limit the number of entries
+        if (entries.size() > 100){
+            entries.remove(0);
+        }
         LineDataSet dataSet = new LineDataSet(entries, "Shitty Point Data"); // add entries to dataset
         dataSet.setColor(ColorTemplate.COLORFUL_COLORS[1]);
         dataSet.setValueTextColor(Color.BLACK);

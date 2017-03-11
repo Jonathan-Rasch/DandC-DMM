@@ -31,12 +31,18 @@ public class ConnectionScreenActivity extends AppCompatActivity
             if (MessageCode.PARSED_DATA_DC_VOLTAGE.equals(intent.getAction())) {
                 String message = "DC Voltage:"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f));
                 displayReceivedPacket(message);
+            }else if(MessageCode.PARSED_DATA_DC_CURRENT.equals(intent.getAction())){
+                String message = "DC Current:"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f));
+                displayReceivedPacket(message);
+            }else if(MessageCode.PARSED_DATA_RESISTANCE.equals(intent.getAction())){
+                String message = "Resistance:"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f));
+                displayReceivedPacket(message);
             }
         }
     };
 
     private LinkedList<String> message_list = new LinkedList<>();
-    private static final int CONSOL_BUFFER_SIZE = 30; // how many entries the consol holds
+    private static final int CONSOL_BUFFER_SIZE = 30; // how many entries the console holds
     private void displayReceivedPacket(String message){
         if (consolEnabled) {
             message_list.addFirst(message);
@@ -75,10 +81,13 @@ public class ConnectionScreenActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
         //registering brodcast listener
-        //TODO add filters for resistance and current data intents
         IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
+        filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
+        filter.addAction(MessageCode.PARSED_DATA_RESISTANCE);
         registerReceiver(receiver,filter);
+
         //getting views
         base = (BaseApplication)getApplicationContext();
         tv_device_address = (TextView)findViewById(R.id.connectionScreen_device_address);

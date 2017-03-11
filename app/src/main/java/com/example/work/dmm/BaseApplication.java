@@ -31,14 +31,16 @@ public class BaseApplication extends Application {
                         connection_in_Progress = false;
                         break;
                     case MessageCode.CUSTOM_ACTION_SERIAL:
+                        //message from the connection containing the received packet
                         parse_read_data(intent.getByteArrayExtra(MessageCode.MSG_READ_DATA));
                         break;
                     case MessageCode.DMM_CHANGE_MODE_REQUEST:
+                        //telling the DMM to switch to the given mode
                         int mode= intent.getIntExtra(MessageCode.MODE,-1);
                         if (mode != -1) {
                             String message = "<m:"+String.valueOf(mode)+">";
                             connection.write(message.getBytes());
-                            Log.e("wrote:",message);
+                            Log.d("wrote:",message);
                         }
                     default:
                         break;
@@ -127,8 +129,16 @@ public class BaseApplication extends Application {
             Log.e("validate_message","incorrect number of opening/closing tags in message: "+message);
             return false;
         }
-        if (!message.contains("m:") || !message.contains(";v:") /*|| !message.contains(";r:")*/){
-            Log.e("validate_message","message missing component: "+message);
+        if (!message.contains("m:") || !message.contains(";v:") || !message.contains(";r:")){
+            if(!message.contains("m:")){
+                Log.e("validate_message","message missing 'm:' component. ");
+            }
+            if(!message.contains(";v:")){
+                Log.e("validate_message","message missing ';v:' component. ");
+            }
+            if(!message.contains(";r:")){
+                Log.e("validate_message","message missing ';r:' component. ");
+            }
             return false;
         }
         return true;
@@ -139,6 +149,7 @@ public class BaseApplication extends Application {
     to send the data.
      */
     private void parse_and_send(String data){
+        //Parsing the operation mode of the DMM
         int mode = 0;
         String mode_string = data.substring(data.indexOf("<m:")+3,data.indexOf(";v:"));
         try {
@@ -147,31 +158,46 @@ public class BaseApplication extends Application {
             Log.e("parse_and_send","could not parse mode from message: "+data);
             return;
         }
+        //Parsing the value
         float value = 0;
-        String value_string = data.substring(data.indexOf(";v:")+3,data.indexOf(">"));//TODO adjust for range message !
+        String value_string = data.substring(data.indexOf(";v:")+3,data.indexOf(";r:"));
         try {
             value = Float.parseFloat(value_string);
         } catch (NumberFormatException e) {
             Log.e("parse_and_send","could not parse value from message: "+data);
             return;
         }
-        //TODO parse range
+        //Parsing the range of the value
+        int range = 0;
+        String range_string = data.substring(data.indexOf(";r:"),data.indexOf(">"));
+        try{
+            range = Integer.parseInt(range_string);
+        }catch (NumberFormatException e){
+            Log.e("parse_and_send","could not parse range from message:" + data);
+            return;
+        }
+
         //sending message to relevant activity:
-        Intent intent_to_send;
+        Intent intent_to_send = new Intent(MessageCode.ERROR);
         switch (mode){
             case MessageCode.DC_VOLTAGE_MODE:
                 intent_to_send = new Intent(MessageCode.PARSED_DATA_DC_VOLTAGE);
-                intent_to_send.putExtra(MessageCode.VALUE,value);
-                //TODO add range
-                sendBroadcast(intent_to_send);
                 break;
             case MessageCode.DC_CURRENT_MODE://DC current
+                intent_to_send = new Intent(MessageCode.PARSED_DATA_DC_CURRENT);
                 break;
             case MessageCode.RESISTANCE_MODE://resistance
+                intent_to_send = new Intent(MessageCode.PARSED_DATA_RESISTANCE);
                 break;
             default:
                 Log.e("parse_and_send","invalid mode: "+mode);
                 break;
+        }
+        // if message is valid then add the value and range data and send it
+        if (intent_to_send.getAction() != MessageCode.ERROR){
+            intent_to_send.putExtra(MessageCode.VALUE,value);
+            intent_to_send.putExtra(MessageCode.RANGE,range);
+            sendBroadcast(intent_to_send);
         }
     }
 
