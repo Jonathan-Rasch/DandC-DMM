@@ -144,6 +144,7 @@ class clientBluetoothConnection extends Thread implements Serializable{
             for (int i=0;i<size;i++){
                 data[i]=byte_array[i];
             }
+            Log.e("TAG",new String(byte_array));
             //sending data
             Intent read_data_Intent = new Intent();
             read_data_Intent.setAction(MessageCode.CUSTOM_ACTION_SERIAL);

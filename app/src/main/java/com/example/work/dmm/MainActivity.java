@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tv_bluetoothStatus;
     private TextView tv_discovered_devices;
     private Button btn_connect;//starts the bluetooth setup
+    private Button btn_DEBUG_CONNECT;
     //Broadcast receiver for bluetooth state changes
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
         tv_bluetoothStatus = (TextView) findViewById(R.id.tv_bluetoothStatus);
         btn_connect = (Button) findViewById(R.id.btn_connect);
         tv_discovered_devices = (TextView)findViewById(R.id.tv_discovered_devices);
+        btn_DEBUG_CONNECT = (Button) findViewById(R.id.DEBUG_CONNECT);
         //broadcast receiver setup
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
@@ -175,6 +177,14 @@ public class MainActivity extends AppCompatActivity {
         btn_connect.setEnabled(false);//disable button whilst trying to setup the bluetooth
         setupBluetooth();
 
+    }
+
+    public void onClick_DEBUG_CONNECT(View view){
+        Intent startConnectionScreen = new Intent(getApplicationContext(),ConnectionScreenActivity.class);
+        startActivity(startConnectionScreen);
+        unregisterReceiver(receiver);
+        Log.w("DEBUG","Connection screen transition via debug button");
+        finish();
     }
 
 
