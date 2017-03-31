@@ -29,6 +29,7 @@ dependencies {
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     compile 'com.github.shinelw:library:1.0.1'
     compile 'com.skyfishjy.ripplebackground:library:1.0.1'
+    compile 'com.github.paroca72:sc-widgets:2.1.2'
     testCompile 'junit:junit:4.12'
 }
 
