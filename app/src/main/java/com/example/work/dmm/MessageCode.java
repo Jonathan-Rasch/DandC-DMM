@@ -10,6 +10,7 @@ abstract class MessageCode {
     public static final String PARSED_DATA_DC_VOLTAGE = "PARSED_DATA_DC_VOLTAGE";
     public static final String PARSED_DATA_DC_CURRENT = "PARSED_DATA_DC_CURRENT";
     public static final String PARSED_DATA_RESISTANCE = "PARSED_DATA_RESISTANCE";
+    public static final String PARSED_DATA_FREQ_RESP = "PARSED_DATA_FREQ_RESP";
     public static final String ERROR = "ERROR";
 
     public static final String DMM_CHANGE_MODE_REQUEST = "DMM_CHANGE_MODE_REQUEST";
@@ -17,6 +18,8 @@ abstract class MessageCode {
     public static final int DC_VOLTAGE_MODE = 1;
     public static final int DC_CURRENT_MODE = 2;
     public static final int RESISTANCE_MODE = 3;
+    public static final int FREQ_RESP_MODE = 4;
+    public static final int SIG_GEN_MODE = 5;
 
     public static final int MSG_SOCKET_CONNECTION_FAILED = -1;
     public static final int MSG_SOCKET_RFCOM_FAILED = -2;

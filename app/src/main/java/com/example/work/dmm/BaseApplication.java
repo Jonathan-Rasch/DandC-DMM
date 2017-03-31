@@ -189,6 +189,9 @@ public class BaseApplication extends Application {
             case MessageCode.RESISTANCE_MODE://resistance
                 intent_to_send = new Intent(MessageCode.PARSED_DATA_RESISTANCE);
                 break;
+            case MessageCode.FREQ_RESP_MODE://resistance
+                intent_to_send = new Intent(MessageCode.PARSED_DATA_FREQ_RESP);
+                break;
             default:
                 Log.e("parse_and_send","invalid mode: "+mode);
                 break;
@@ -198,6 +201,8 @@ public class BaseApplication extends Application {
             intent_to_send.putExtra(MessageCode.VALUE,value);
             intent_to_send.putExtra(MessageCode.RANGE,range);
             sendBroadcast(intent_to_send);
+        }else{
+            Log.e("MsgCode","Invalid message mode, send canceled");
         }
     }
 
