@@ -30,6 +30,7 @@ dependencies {
     compile 'com.github.shinelw:library:1.0.1'
     compile 'com.skyfishjy.ripplebackground:library:1.0.1'
     compile 'com.github.paroca72:sc-widgets:2.1.2'
+    compile 'com.numetriclabz.numandroidcharts:numandroidcharts:1.0.12'
     testCompile 'junit:junit:4.12'
 }
 
