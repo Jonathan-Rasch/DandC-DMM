@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -89,7 +90,6 @@ public class DCvoltageActivity extends AppCompatActivity {
 
     /*converts input voltage (e.g 0.3V) to the current range, so for example 0.3V->300mV*/
     private float valueToRangeAdjustment(int range, float voltage){
-        //TODO needs to be verified and tested with actual bord
         switch(range){
             case 0:
                 return voltage*1;//V
@@ -172,6 +172,7 @@ public class DCvoltageActivity extends AppCompatActivity {
         isLogging = !isLogging;
     }
 
+    /*DEBUG CODE !*/
     public void logVoltage(View view){
         if (!currentVoltageLogged) {
             Entry e =new Entry((float)xoffset,voltage);
@@ -183,6 +184,7 @@ public class DCvoltageActivity extends AppCompatActivity {
             currentVoltageLogged = true;
         }
     }
+    /*/DEBUG CODE*/
 
     public void onClickOscilloscopeMode(View view){
 
