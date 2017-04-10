@@ -22,9 +22,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -112,7 +110,7 @@ public class DCvoltageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dcvoltage);
         base = (BaseApplication)getApplicationContext();
-        logVoltageButton = (Button) findViewById(R.id.btn_ClearLog);
+        logVoltageButton = (Button) findViewById(R.id.btn_exportData);
         gauge = (Speedometer) findViewById(R.id.gauge);
         gauge.setMax(10);
         gauge.setMin(-10);
