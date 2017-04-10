@@ -9,11 +9,13 @@ package com.example.work.dmm;
         import android.graphics.RectF;
         import android.graphics.Typeface;
         import android.util.AttributeSet;
+        import android.util.Log;
         import android.view.View;
 
 /**
  * DEVELOPED BY Nelson R. Perez - bilthon@gmail.com
  *https://github.com/bilthon/Android-Speedometer
+ * MODIFIED TO FIT PROJECT SPEC
  */
 
 public class Speedometer extends View implements SpeedChangeListener {
@@ -21,15 +23,18 @@ public class Speedometer extends View implements SpeedChangeListener {
     public static final float DEFAULT_MAX_SPEED = 300; // Assuming this is km/h and you drive a super-car
 
     // Speedometer internal state
-    private String range;
-    private float mMaxSpeed;
-    private float mCurrentSpeed;
+    private String unit = "";
+    public void setUnit(String unit){this.unit = unit;}
+    private float mMaxSpeed = 0;
+    public void setMax(float max){this.mMaxSpeed = max;}
+    private float mMinSpeed = 0;
+    public void setMin(float min){this.mMinSpeed = min;}
+    private float mCurrentSpeed = 0;
 
     // Scale drawing tools
     private Paint onMarkPaint;
     private Paint offMarkPaint;
     private Paint scalePaint;
-    private Paint testPaint;
     private Paint readingPaint;
     private Path onPath;
     private Path offPath;
@@ -109,13 +114,20 @@ public class Speedometer extends View implements SpeedChangeListener {
         return mCurrentSpeed;
     }
 
+    private boolean rangeError = false;// if value is out of unit
     public void setCurrentSpeed(float mCurrentSpeed) {
-        if(mCurrentSpeed > this.mMaxSpeed)
+        if(mCurrentSpeed > this.mMaxSpeed){
+            rangeError = true;
             this.mCurrentSpeed = mMaxSpeed;
-        else if(mCurrentSpeed < 0)
-            this.mCurrentSpeed = 0;
-        else
+        }
+        else if(mCurrentSpeed < mMinSpeed){
+            rangeError = true;
+            this.mCurrentSpeed = mMinSpeed;
+        }
+        else {
+            rangeError = false;
             this.mCurrentSpeed = mCurrentSpeed;
+        }
     }
 
     @Override
@@ -181,14 +193,15 @@ public class Speedometer extends View implements SpeedChangeListener {
     private void drawScaleBackground(Canvas canvas){
         offPath.reset();
         for(int i = -180; i < 0; i+=4){
-            offPath.addArc(oval, i, 2f);
+            offPath.addArc(oval, i, 4f);
         }
         canvas.drawPath(offPath, offMarkPaint);
     }
 
     private void drawScale(Canvas canvas){
         onPath.reset();
-        for(int i = -180; i < (mCurrentSpeed/mMaxSpeed)*180 - 180; i+=4){
+        float percentageFilled = Math.abs((mCurrentSpeed-mMinSpeed)/(mMaxSpeed-mMinSpeed));
+        for(int i = -180; i < percentageFilled*180 - 180; i+=1){
             onPath.addArc(oval, i, 2f);
         }
         canvas.drawPath(onPath, onMarkPaint);
@@ -199,21 +212,33 @@ public class Speedometer extends View implements SpeedChangeListener {
         canvas.rotate(-180, centerX,centerY);
         Path circle = new Path();
         double halfCircumference = radius * Math.PI;
-        double increments = mMaxSpeed/10;
-        for(int i = 0; i < this.mMaxSpeed; i += increments){
+        double increments = Math.abs(mMaxSpeed-mMinSpeed)/10;
+        if(increments<1){
+            Log.e("GAUGE","increment too small must be >=1");
+        }
+        for(int i = (int)mMinSpeed; i <= this.mMaxSpeed; i += increments){
             circle.addCircle(centerX, centerY, radius, Path.Direction.CW);
+            float textWidth = scalePaint.measureText(String.valueOf(i))/2;
             canvas.drawTextOnPath(String.format("%d", i),
                     circle,
-                    (float) (i*halfCircumference/this.mMaxSpeed),
+                    (float) ((Math.abs(i-mMinSpeed)/(this.mMaxSpeed-this.mMinSpeed))*halfCircumference-textWidth),
                     -30f,
-                    scalePaint);//testPaint
+                    scalePaint);
         }
         canvas.restore();
     }
 
     private void drawReading(Canvas canvas){
         Path path = new Path();
-        String message = String.format("%d%s", (int)this.mCurrentSpeed,this.range);
+        String message = "";
+        if(rangeError){
+            message = "OUT OF RANGE";
+            readingPaint.setColor(Color.RED);
+        }
+        else {
+            readingPaint.setColor(Color.BLACK);
+            message = String.format("%f%s", this.mCurrentSpeed,this.unit);
+        }
         float[] widths = new float[message.length()];
         readingPaint.getTextWidths(message, widths);
         float advance = 0;

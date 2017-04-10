@@ -5,22 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Switch;
-import android.widget.ToggleButton;
+
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.numetriclabz.numandroidcharts.ChartData;
-import com.numetriclabz.numandroidcharts.GaugeChart;
-import com.shinelw.library.ColorArcProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +31,10 @@ public class DCvoltageActivity extends AppCompatActivity {
     private float voltage=0;
     private ArrayList<Entry> entry_list = new ArrayList<Entry>();
 
-    private String[] unitsForRanges = {"V","","",""};
+    private String[] unitsForRanges = {"V","mV","mV","mV"};
+    private float[] maxValuesForRanges = {10,1000,100,10};
+    private float[] minValuesForRanges = {-10,-1000,-100,-10};
+    private int currentRange = -1;//-1 to ensure range update on first intent
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -44,6 +42,8 @@ public class DCvoltageActivity extends AppCompatActivity {
             if (intent.getAction() == MessageCode.PARSED_DATA_DC_VOLTAGE) {
                 parseRange(intent.getIntExtra(MessageCode.RANGE,0));
                 voltage = intent.getFloatExtra(MessageCode.VALUE,0f);
+                voltage = valueToRangeAdjustment(currentRange,voltage);
+                gauge.onSpeedChanged(voltage);
                 if (isLogging) {
                     Entry e =new Entry((float)xoffset,voltage);
                     entry_list.add(e);
@@ -60,11 +60,31 @@ public class DCvoltageActivity extends AppCompatActivity {
         }
     };
 
-    /*take the range value and set the correct units for display in the app*/
+    /*take the range value and set the correct units for display in gauge*/
     private void parseRange(int range){
-        /*case(){
+        //check if the range has changed
+        if(currentRange != range){
+            //assigning new gauge values and units
+            gauge.setMin(minValuesForRanges[range]);
+            gauge.setMax(maxValuesForRanges[range]);
+            gauge.setUnit(unitsForRanges[range]);
+            currentRange = range;
+        }
+    }
 
-        }*/
+    /*converts input voltage (e.g 0.3V) to the current range, so for example 0.3V->300mV*/
+    private float valueToRangeAdjustment(int range, float voltage){
+        switch(range){
+            case 0:
+                return voltage*1;//V
+            case 1:
+                return voltage*1;//V
+            case 2:
+                return voltage*100;//mV
+            case 3:
+                return voltage*100;//mV
+        }
+        return 0;
     }
 
     @Override
@@ -73,6 +93,8 @@ public class DCvoltageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dcvoltage);
         logVoltageButton = (Button) findViewById(R.id.logVoltageButton);
         gauge = (Speedometer) findViewById(R.id.gauge);
+        gauge.setMax(10);
+        gauge.setMin(-10);
         //Broadcast receiver and filter
         IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
         filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
@@ -105,13 +127,32 @@ public class DCvoltageActivity extends AppCompatActivity {
         isLogging = !isLogging;
     }
 
+    /*DEBUG CODE !*/
     public void logVoltage(View view){
-        float entry = r.nextFloat()*10;
-        gauge.onSpeedChanged(entry);
-        entry_list.add(new Entry((float)xoffset,entry));
-        xoffset++;
-        genChart();
+        int range = r.nextInt(4);
+        float voltage = 0;
+        //values so that they are sometimes out of range
+        switch (range){
+            case 0:
+                voltage = (r.nextFloat()*11+r.nextFloat()*-11);
+                break;
+            case 1:
+                voltage = (r.nextFloat()*1.1f+r.nextFloat()*-1.1f);
+                break;
+            case 2:
+                voltage = (r.nextFloat()*0.11f+r.nextFloat()*-0.11f);
+                break;
+            case 3:
+                voltage = (r.nextFloat()*0.011f+r.nextFloat()*-0.011f);
+                break;
+        }
+
+        Intent I = new Intent(MessageCode.PARSED_DATA_DC_VOLTAGE);
+        I.putExtra(MessageCode.VALUE,voltage);
+        I.putExtra(MessageCode.RANGE,range);
+        sendBroadcast(I);
     }
+    /*/DEBUG CODE*/
 
     private void genChart() {
         //Generate new dataset
