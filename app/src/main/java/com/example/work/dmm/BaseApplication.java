@@ -16,6 +16,21 @@ import java.util.ArrayList;
  */
 
 public class BaseApplication extends Application {
+
+
+    //settings variables
+    private static int maxDataPointsToKeep = 50;
+    public static int getMaxDataPointsToKeep() {return maxDataPointsToKeep;}
+    public static void setMaxDataPointsToKeep(int maxDataPoints) {maxDataPointsToKeep = maxDataPoints;}
+
+    private static int DmmDeviceId =0000;
+    public static int getDmmDeviceId() {return DmmDeviceId;}
+    public static void setDmmDeviceId(int dmmDeviceId) {DmmDeviceId = dmmDeviceId;}
+
+    private static String adapterAddress = "98:D3:31:40:19:31";
+    public static String getAdapterAddress() {return adapterAddress;}
+    public static void setAdapterAddress(String newAddress) {adapterAddress = newAddress;}
+
     //Bluetooth connection
     private clientBluetoothConnection connection;
     private BluetoothAdapter blueAdapter;
@@ -210,14 +225,14 @@ public class BaseApplication extends Application {
 //getters and setters
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public String getDeviceName(){
+    public String getConnectedDeviceName(){
         if (getConnection_active()){
             return connection.getBluetoothDevice().getName();
         }
         return "";
     }
 
-    public String getDeviceAddress(){
+    public String getConnectedDeviceAddress(){
         if (getConnection_active()){
             return connection.getBluetoothDevice().getAddress();
         }

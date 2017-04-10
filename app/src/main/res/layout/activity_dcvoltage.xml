@@ -7,6 +7,14 @@
     android:layout_height="match_parent"
     tools:context="com.example.work.dmm.DCvoltageActivity">
 
+    <Button
+        android:id="@+id/btn_Oscilloscope"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:text="Oscilloscope mode" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,28 +34,46 @@
 
 
     <Button
-            android:text="Log Voltage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:id="@+id/logVoltageButton"
-            android:onClick="logVoltage"/>
+        android:id="@+id/btn_ClearLog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="onClickClearLog"
+        android:text="Clear Log" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:onClick="logVoltage"
+        android:text="Log Voltage" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="onClickExportData"
+        android:text="Export chart data" />
 
     <Switch
-            android:text="Auto Logging Mode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/loggingToggle"
-            android:layout_alignBaseline="@+id/logVoltageButton"
-            android:layout_alignBottom="@+id/logVoltageButton"
-            android:layout_alignParentEnd="true"
-    />
+        android:id="@+id/loggingToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btn_ClearLog"
+        android:layout_alignBottom="@+id/btn_ClearLog"
+        android:layout_alignParentEnd="true"
+        android:text="Auto Logging" />
 
     <com.github.mikephil.charting.charts.LineChart
         android:layout_marginTop="220dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/loggingLineChart"/>
+        android:id="@+id/loggingLineChart"
+        android:layout_above="@+id/button2" />
 
 
 
