@@ -10,6 +10,8 @@ import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,9 +22,6 @@ import com.skyfishjy.library.RippleBackground;
 public class MainActivity extends AppCompatActivity {
     //Ripple Effect for searching
     private RippleBackground rippleBackground;
-
-    //bluetooth adapter mac address
-    private String adapter_address = "98:D3:31:40:19:31";
     //base application
     private BaseApplication base;
     // the device bluetooth adapter
@@ -76,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 if (device != null) {
                     String device_address = device.getAddress();
                     tv_discovered_devices.setText(tv_discovered_devices.getText()+"\n"+device.getName()+" "+device_address);
-                    if (device_address != null && device_address.equals(adapter_address) && !base.get_connection_in_Progress()){
+                    if (device_address != null && device_address.equals(base.getAdapterAddress()) && !base.get_connection_in_Progress()){
                         base.ts("Bluetooth device found: "+ device.getName());
                         base.start_connection(device);
                         //start connection screen activity
@@ -93,7 +92,26 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.connection_screen, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            Intent start_settingsActivity_intent = new Intent(this,SettingsActivity.class);
+            startActivity(start_settingsActivity_intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

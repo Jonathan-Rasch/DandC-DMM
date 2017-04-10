@@ -93,8 +93,8 @@ public class ConnectionScreenActivity extends AppCompatActivity
         tv_device_address = (TextView)findViewById(R.id.connectionScreen_device_address);
         tv_device_name = (TextView)findViewById(R.id.connectionScreen_device_name);
         tv_received_data = (TextView)findViewById(R.id.tv_received_data);
-        tv_device_address.setText(base.getDeviceAddress());
-        tv_device_name.setText(base.getDeviceName());
+        tv_device_address.setText(base.getConnectedDeviceAddress());
+        tv_device_name.setText(base.getConnectedDeviceName());
     }
 
     @Override
@@ -124,12 +124,11 @@ public class ConnectionScreenActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent start_settingsActivity_intent = new Intent(this,SettingsActivity.class);
+            startActivity(start_settingsActivity_intent);
         }
-
         return super.onOptionsItemSelected(item);
     }
 

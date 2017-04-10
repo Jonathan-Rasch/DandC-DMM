@@ -5,8 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Random;
 
 public class DCvoltageActivity extends AppCompatActivity {
+    private BaseApplication base;
     private LineChart loggingLineChart;
     private Button logVoltageButton;
     private Speedometer gauge;
@@ -74,15 +76,16 @@ public class DCvoltageActivity extends AppCompatActivity {
 
     /*converts input voltage (e.g 0.3V) to the current range, so for example 0.3V->300mV*/
     private float valueToRangeAdjustment(int range, float voltage){
+        //TODO needs to be verified and tested with actual bord
         switch(range){
             case 0:
                 return voltage*1;//V
             case 1:
-                return voltage*1;//V
+                return voltage*1000;//mV
             case 2:
-                return voltage*100;//mV
+                return voltage*1000;//mV
             case 3:
-                return voltage*100;//mV
+                return voltage*1000;//mV
         }
         return 0;
     }
@@ -91,6 +94,7 @@ public class DCvoltageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dcvoltage);
+        base = (BaseApplication)getApplicationContext();
         logVoltageButton = (Button) findViewById(R.id.logVoltageButton);
         gauge = (Speedometer) findViewById(R.id.gauge);
         gauge.setMax(10);
@@ -127,26 +131,27 @@ public class DCvoltageActivity extends AppCompatActivity {
         isLogging = !isLogging;
     }
 
-    /*DEBUG CODE !*/
+    /*DEBUG CODE !
+    * EMULATES RECEIVING A PACKET CONTAINING VOLTAGE AND RANGE.*/
     public void logVoltage(View view){
         int range = r.nextInt(4);
         float voltage = 0;
         //values so that they are sometimes out of range
         switch (range){
             case 0:
-                voltage = (r.nextFloat()*11+r.nextFloat()*-11);
+                voltage = (r.nextFloat()*15+r.nextFloat()*-15);
                 break;
             case 1:
-                voltage = (r.nextFloat()*1.1f+r.nextFloat()*-1.1f);
+                voltage = (r.nextFloat()*1.5f+r.nextFloat()*-1.5f);
                 break;
             case 2:
-                voltage = (r.nextFloat()*0.11f+r.nextFloat()*-0.11f);
+                voltage = (r.nextFloat()*0.15f+r.nextFloat()*-0.15f);
                 break;
             case 3:
-                voltage = (r.nextFloat()*0.011f+r.nextFloat()*-0.011f);
+                voltage = (r.nextFloat()*0.015f+r.nextFloat()*-0.015f);
                 break;
         }
-
+        Log.e("blah","voltage="+voltage+" Range="+range);
         Intent I = new Intent(MessageCode.PARSED_DATA_DC_VOLTAGE);
         I.putExtra(MessageCode.VALUE,voltage);
         I.putExtra(MessageCode.RANGE,range);
@@ -158,7 +163,7 @@ public class DCvoltageActivity extends AppCompatActivity {
         //Generate new dataset
         List<Entry> entries = entry_list;
         //limit the number of entries
-        if (entries.size() > 10){
+        if (entries.size() > base.getMaxDataPointsToKeep()){
             entries.remove(0);
         }
         LineDataSet dataSet = new LineDataSet(entries, "Shitty Point Data"); // add entries to dataset
@@ -171,4 +176,10 @@ public class DCvoltageActivity extends AppCompatActivity {
         loggingLineChart.notifyDataSetChanged();//Causes redraw when we add data. I imagine we'll initiate
     }
 
+    @Override
+    protected void onDestroy() {
+        //preventing receiver leaking
+        this.unregisterReceiver(this.receiver);
+        super.onDestroy();
+    }
 }
