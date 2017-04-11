@@ -17,9 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_gravity="bottom"
-            android:max="4"
-            android:progress="2" />
-
+            android:max="1000"
+            android:progress="1" />
     </LinearLayout>
 
 

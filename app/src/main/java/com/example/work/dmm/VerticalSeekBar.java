@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.widget.SeekBar;
 
 /**
- * Created by work on 11/04/2017.
+ * CODE CREATED BY: https://hackskrieg.wordpress.com/2012/04/20/working-vertical-seekbar-for-android/
  */
 
 public class VerticalSeekBar extends android.support.v7.widget.AppCompatSeekBar {

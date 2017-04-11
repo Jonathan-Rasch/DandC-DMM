@@ -34,7 +34,6 @@ public class DCvoltageActivity extends AppCompatActivity {
     private LineChart loggingLineChart;
     private Button logVoltageButton;
     private Speedometer gauge;
-    Random r = new Random(System.currentTimeMillis());
     boolean isLogging = false;
     private int xoffset = 0;
     private float voltage=0;
@@ -100,10 +99,11 @@ public class DCvoltageActivity extends AppCompatActivity {
         }
         return 0;
     }
-    /*DEBUG*/
+    /*DEBUG*//*
     final Handler h = new Handler();
     final int delay = 100; //milliseconds
-/*DEBUG END*/
+    Random r = new Random(System.currentTimeMillis());
+    *//*DEBUG END*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +134,7 @@ public class DCvoltageActivity extends AppCompatActivity {
         });
 
 
-/*DEBUG*/
+   /* *//*DEBUG*//*
         h.postDelayed(new Runnable(){
             public void run(){
                 int range = r.nextInt(4);
@@ -162,7 +162,7 @@ public class DCvoltageActivity extends AppCompatActivity {
                 h.postDelayed(this, delay);
             }
         }, delay);
-/*DEBUG END*/
+    *//*DEBUG END*/
 
     }
 
