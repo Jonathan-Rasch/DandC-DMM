@@ -183,7 +183,8 @@ public class DCvoltageActivity extends AppCompatActivity {
     }
 
     public void onClickOscilloscopeMode(View view){
-
+        Intent start_oscilloscope_activity_intent = new Intent(this,VoltageOscilloscopeActivity.class);
+        startActivity(start_oscilloscope_activity_intent);
     }
 
     public void onClickExportData(View view){
@@ -202,20 +203,22 @@ public class DCvoltageActivity extends AppCompatActivity {
         }
         String data = dataString.toString();
         try {
-            FileOutputStream out = new FileOutputStream(file);
-            out.write(data.getBytes());
-            out.close();
+            if (data.length()>0) {
+                FileOutputStream out = new FileOutputStream(file);
+                out.write(data.getBytes());
+                out.close();
+                // try to send file via email
+                Uri fileLocation  =   Uri.fromFile(file);
+                Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "DMM Voltage data");
+                sendIntent.putExtra(Intent.EXTRA_STREAM, fileLocation);
+                sendIntent.setType("text/html");
+                startActivity(sendIntent);
+            }
         } catch (Exception e) {
             base.ts("ERROR encountered when trying to export data.");
             e.printStackTrace();
         }
-        // try to send file via email
-        Uri fileLocation  =   Uri.fromFile(file);
-        Intent sendIntent = new Intent(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_SUBJECT, "DMM Voltage data");
-        sendIntent.putExtra(Intent.EXTRA_STREAM, fileLocation);
-        sendIntent.setType("text/html");
-        startActivity(sendIntent);
     }
 
     public void onClickClearLog(View view){
