@@ -1,0 +1,13 @@
+﻿-> got rid of numcharts library for logplot because it is shit. going to use webview and charts.js instead
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch voltageOscilloscope
+# Your branch is up-to-date with 'origin/voltageOscilloscope'.
+#
+# Changes to be committed:
+#	modified:   app/build.gradle
+#	modified:   app/src/main/AndroidManifest.xml
+#	modified:   app/src/main/java/com/example/work/dmm/FrequencyResponseActivity.java
+#	modified:   app/src/main/res/layout/activity_frequency_response.xml
+#
+
