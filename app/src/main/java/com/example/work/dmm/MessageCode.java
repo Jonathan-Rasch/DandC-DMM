@@ -18,8 +18,12 @@ abstract class MessageCode {
     public static final int DC_VOLTAGE_MODE = 1;
     public static final int DC_CURRENT_MODE = 2;
     public static final int RESISTANCE_MODE = 3;
-    public static final int FREQ_RESP_MODE = 4;
     public static final int SIG_GEN_MODE = 5;
+    public static final int FREQ_RESP_MODE = 4;
+    /*codes for extras of the FREQ RESP packets*/
+    public static final String FREQ_RESP_START_FREQ = "FREQ_RESP_START_FREQ";
+    public static final String FREQ_RESP_END_FREQ = "FREQ_RESP_END_FREQ";
+    public static final String FREQ_RESP_STEPS = "FREQ_RESP_STEPS";
 
     public static final int MSG_SOCKET_CONNECTION_FAILED = -1;
     public static final int MSG_SOCKET_RFCOM_FAILED = -2;

@@ -16,8 +16,7 @@ import java.util.ArrayList;
  */
 
 public class BaseApplication extends Application {
-
-
+    private static final String TAG = "BASEAPPLICATION";
     //settings variables
     private static int maxDataPointsToKeep = 50;
     public static int getMaxDataPointsToKeep() {return maxDataPointsToKeep;}
@@ -30,6 +29,18 @@ public class BaseApplication extends Application {
     private static String adapterAddress = "98:D3:31:40:19:31";
     public static String getAdapterAddress() {return adapterAddress;}
     public static void setAdapterAddress(String newAddress) {adapterAddress = newAddress;}
+
+    private static int freqRespStartFreqHz = 1000;
+    public static int getFreqRespStartFreqHz() {return freqRespStartFreqHz;}
+    public static void setFreqRespStartFreqHz(int freqRespStartFreqHz) {BaseApplication.freqRespStartFreqHz = freqRespStartFreqHz;}
+
+    private static int freqRespEndFreqHz = 10000;
+    public static int getFreqRespEndFreqHz() {return freqRespEndFreqHz;}
+    public static void setFreqRespEndFreqHz(int freqRespEndFreqHz) {BaseApplication.freqRespEndFreqHz = freqRespEndFreqHz;}
+
+    private static int numberOfSteps = 10;
+    public static int getNumberOfSteps() {return numberOfSteps;}
+    public static void setNumberOfSteps(int numberOfSteps) {BaseApplication.numberOfSteps = numberOfSteps;}
 
     //Bluetooth connection
     private clientBluetoothConnection connection;
@@ -52,8 +63,20 @@ public class BaseApplication extends Application {
                     case MessageCode.DMM_CHANGE_MODE_REQUEST:
                         //telling the DMM to switch to the given mode
                         int mode= intent.getIntExtra(MessageCode.MODE,-1);
-                        if (mode != -1) {
+                        if (mode != -1 && mode != MessageCode.FREQ_RESP_MODE) {
                             String message = "<m:"+String.valueOf(mode)+">";
+                            connection.write(message.getBytes());
+                            Log.d("wrote:",message);
+                        }else if (mode == MessageCode.FREQ_RESP_MODE){//mode change request for freq resp contains extra data
+                            //TODO needs to be parsed in STM32 code
+                            int startFreqKhz = intent.getIntExtra(MessageCode.FREQ_RESP_START_FREQ,-1);
+                            int endFreqKhz = intent.getIntExtra(MessageCode.FREQ_RESP_END_FREQ,-1);
+                            int numberOfSteps = intent.getIntExtra(MessageCode.FREQ_RESP_STEPS,-1);
+                            if(startFreqKhz < 0 || endFreqKhz < 0 || numberOfSteps < 0){
+                                Log.e(TAG,"Error when parsing the frequency response packet");
+                                return;
+                            }
+                            String message = "<m:"+String.valueOf(mode)+";start:"+startFreqKhz+";end:"+endFreqKhz+";steps:"+numberOfSteps+">";
                             connection.write(message.getBytes());
                             Log.d("wrote:",message);
                         }
@@ -61,7 +84,6 @@ public class BaseApplication extends Application {
                         break;
                 }
             }
-
         }
     };
 
@@ -204,7 +226,11 @@ public class BaseApplication extends Application {
             case MessageCode.RESISTANCE_MODE://resistance
                 intent_to_send = new Intent(MessageCode.PARSED_DATA_RESISTANCE);
                 break;
-            case MessageCode.FREQ_RESP_MODE://resistance
+            case MessageCode.FREQ_RESP_MODE://freq resp
+                /*freq response package uses the same format as all other <m:x;v:y;r:z>
+                * m: stands for mode, which is 4 for freq resp packets
+                * v: Gain for this specific frequency value
+                * r: the frequency at which the value is taken (in Hz)*/
                 intent_to_send = new Intent(MessageCode.PARSED_DATA_FREQ_RESP);
                 break;
             default:
@@ -244,9 +270,11 @@ public class BaseApplication extends Application {
     }
 
     public void t(String text){
+        Log.w(TAG,text);
         Toast.makeText(this,text,Toast.LENGTH_LONG).show();
     }
     public void ts(String text){
+        Log.w(TAG,text);
         Toast.makeText(this,text,Toast.LENGTH_SHORT).show();
     }
 }

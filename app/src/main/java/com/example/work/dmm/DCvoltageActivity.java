@@ -114,10 +114,12 @@ public class DCvoltageActivity extends AppCompatActivity {
         gauge = (Speedometer) findViewById(R.id.gauge);
         gauge.setMax(10);
         gauge.setMin(-10);
-        //Broadcast receiver and filter
+        /*Registering all message types so that application can send switch mode packet if the
+        * wrong packet type is received*/
         IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
         filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
         filter.addAction(MessageCode.PARSED_DATA_RESISTANCE);
+        filter.addAction(MessageCode.PARSED_DATA_FREQ_RESP);
         registerReceiver(receiver,filter);
 
         //Line Chart

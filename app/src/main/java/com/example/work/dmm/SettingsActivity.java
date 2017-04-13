@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class SettingsActivity extends AppCompatActivity {
-
+    private static final String TAG= "SettingsActivity";
     private EditText editText_maxDataPoints;
     private Button confirmIdChange;
     private Button confirmMaxDataPointsChange;
@@ -44,34 +44,14 @@ public class SettingsActivity extends AppCompatActivity {
         txt4.setText(deviceAddress[3]);
         txt5.setText(deviceAddress[4]);
         txt6.setText(deviceAddress[5]);
-    }
 
-    public void onConfirmButton_MaxDataPoints (View view){
-        EditText editText = (EditText)findViewById(R.id.editText_MaxDataPoints);
-        String text = editText.getText().toString();
-        int number =0;
-        // input validation
-        boolean valid = true;
-        if(text.length() <= 0){
-            valid = false;
-        }else{
-            try {
-                number = Integer.parseInt(text);
-                if (number > 9999 || number < 0){
-                    valid = false;
-                }
-            } catch (NumberFormatException e) {
-                //text not an integer
-                valid = false;
-            }
-        }
-        if(valid){
-            BaseApplication.setMaxDataPointsToKeep(number);
-            base.ts("Maximum data points set to:" + number);
-        }else{
-            base.ts("Invalid value");
-            editText.setText(String.valueOf(BaseApplication.getDmmDeviceId()));
-        }
+        EditText startFreq = (EditText)findViewById(R.id.freqRespStart);
+        EditText endFreq = (EditText)findViewById(R.id.freqRespEnd);
+        EditText steps = (EditText)findViewById(R.id.freqRespSteps);
+
+        startFreq.setText(String.valueOf(base.getFreqRespStartFreqHz()));
+        endFreq.setText(String.valueOf(base.getFreqRespEndFreqHz()));
+        steps.setText(String.valueOf(base.getNumberOfSteps()));
     }
 
     public void onConfirmButton_Address (View view) {
@@ -120,7 +100,113 @@ public class SettingsActivity extends AppCompatActivity {
             base.ts("invalid Device address!");
             resetAdapterAddressFromBaseclass();
         }
+    }
 
+    public void onConfirmButton_MaxDataPoints (View view){
+        EditText editText = (EditText)findViewById(R.id.editText_MaxDataPoints);
+        String text = editText.getText().toString();
+        int number =0;
+        // input validation
+        boolean valid = true;
+        if(text.length() <= 0){
+            valid = false;
+        }else{
+            try {
+                number = Integer.parseInt(text);
+                if (number > 9999 || number < 0){
+                    valid = false;
+                }
+            } catch (NumberFormatException e) {
+                //text not an integer
+                valid = false;
+            }
+        }
+        if(valid){
+            BaseApplication.setMaxDataPointsToKeep(number);
+            base.ts("Maximum data points set to:" + number);
+        }else{
+            base.ts("Invalid value");
+            editText.setText(String.valueOf(BaseApplication.getDmmDeviceId()));
+        }
+    }
+
+    public void onConfirmButton_StartFreq(View view){
+        EditText editText = (EditText) findViewById(R.id.freqRespStart);
+        String text = editText.getText().toString();
+        int value = base.getFreqRespStartFreqHz();
+        try {
+            value = Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            editText.setText(String.valueOf(base.getFreqRespStartFreqHz()));
+            base.ts("Invalid value provided for start freq:"+text);
+            return;
+        }
+
+        if(value > base.getFreqRespEndFreqHz()){
+            editText.setText(String.valueOf(base.getFreqRespStartFreqHz()));
+            base.ts("Start frequency cannot be larger than end frequency");
+            return;
+        }else if(value < 100){
+            editText.setText(String.valueOf(base.getFreqRespStartFreqHz()));
+            base.ts("Start frequency cannot be smaller than 100Hz");
+            return;
+        }else{
+            base.ts("Start frequency set to: "+value+"Hz");
+            base.setFreqRespStartFreqHz(value);
+        }
+    }
+
+    public void onConfirmButton_EndFreq(View view){
+        EditText editText = (EditText) findViewById(R.id.freqRespEnd);
+        String text = editText.getText().toString();
+        int value = base.getFreqRespEndFreqHz();
+        try {
+            value = Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            editText.setText(String.valueOf(base.getFreqRespEndFreqHz()));
+            base.ts("Invalid value provided for end freq:"+text);
+            return;
+        }
+
+        if(value < base.getFreqRespStartFreqHz()){
+            editText.setText(String.valueOf(base.getFreqRespEndFreqHz()));
+            base.ts("End frequency cannot be smaller than Start frequency");
+            return;
+        }else if(value > 1000000){
+            editText.setText(String.valueOf(base.getFreqRespEndFreqHz()));
+            base.ts("End frequency cannot be smaller than 1MHz");
+            return;
+        }else{
+            base.ts("End frequency set to: "+value+"Hz");
+            base.setFreqRespEndFreqHz(value);
+        }
+
+    }
+
+    public void onConfirmButton_Steps(View view){
+        EditText editText = (EditText) findViewById(R.id.freqRespSteps);
+        String text = editText.getText().toString();
+        int value = base.getFreqRespEndFreqHz();
+        try {
+            value = Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            editText.setText(String.valueOf(base.getNumberOfSteps()));
+            base.ts("Invalid value provided for steps:"+text);
+            return;
+        }
+
+        if(value < 5){
+            editText.setText(String.valueOf(base.getNumberOfSteps()));
+            base.ts("Step number cannot be smaller than 5");
+            return;
+        }else if(value > 1000){
+            editText.setText(String.valueOf(base.getNumberOfSteps()));
+            base.ts("Steps cannot be larger than 1000");
+            return;
+        }else{
+            base.ts("Steps set to: "+value);
+            base.setNumberOfSteps(value);
+        }
     }
 
     @Override
