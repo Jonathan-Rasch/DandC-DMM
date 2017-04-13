@@ -31,8 +31,8 @@
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".VoltageOscilloscopeActivity"
-            android:screenOrientation="landscape"/>
-
+            android:screenOrientation="landscape" />
+        <activity android:name=".FrequencyResponseActivity"></activity>
     </application>
 
 </manifest>

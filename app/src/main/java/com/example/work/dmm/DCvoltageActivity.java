@@ -221,6 +221,17 @@ public class DCvoltageActivity extends AppCompatActivity {
         }
     }
 
+    public void onClickExportImage(View view){
+        if(entry_list.size()<= 0){
+            base.t("Graph empty, aborting image export");
+            return;
+        }
+        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+        String imageName =   "VoltageGraphImage_"+currentDateTimeString;
+        loggingLineChart.saveToGallery(imageName,100);
+        base.ts("Image saved to Gallery as: "+imageName);
+    }
+
     public void onClickClearLog(View view){
         entry_list = new ArrayList<>();
         loggingLineChart.clear();

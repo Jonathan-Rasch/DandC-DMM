@@ -2,22 +2,40 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_Voltage"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Voltage" />
-        <item
-            android:id="@+id/nav_Current"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Current" />
-        <item
-            android:id="@+id/nav_Resistance"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Resistance" />
+
+        <group
+            android:id="@+id/menu_top"
+            android:checkableBehavior="single">
+
+            <item
+                android:id="@+id/nav_Voltage"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="Voltage" />
+            <item
+                android:id="@+id/nav_Current"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="Current" />
+            <item
+                android:id="@+id/nav_Resistance"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="Resistance" />
+            <item
+                android:id="@+id/nav_freqResp"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="Frequency response" />
+
+        </group>
+
+    <group
+        android:id="@+id/menu_bottom"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_disconnect"
             android:icon="@drawable/ic_menu_manage"
             android:title="Disconnect" />
+    </group>
+
+
     </group>
 
 </menu>

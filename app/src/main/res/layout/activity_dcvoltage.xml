@@ -47,10 +47,19 @@
         android:id="@+id/btn_exportData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="onClickExportImage"
+        android:text="Export Image"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
+        android:layout_alignStart="@+id/logVoltageButton" />
+
+    <Button
+        android:id="@+id/button9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:onClick="onClickExportData"
-        android:text="Export Data" />
+        android:text="Export Data"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:id="@+id/button8"
@@ -59,7 +68,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:onClick="onClickOscilloscopeMode"
-        android:text="Oscilloscope mode" />
+        android:text="Oscilloscope" />
 
     <Button
         android:id="@+id/button7"

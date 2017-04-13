@@ -103,11 +103,7 @@ public class ConnectionScreenActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            base.drop_connection();
-            this.unregisterReceiver(receiver);
-            Intent startMainScreen = new Intent(getApplicationContext(),MainActivity.class);
-            startActivity(startMainScreen);
-            finish();
+            drawer.openDrawer(GravityCompat.START);
         }
     }
 
@@ -145,8 +141,15 @@ public class ConnectionScreenActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_Resistance) {
 
+        } else if (id == R.id.nav_freqResp) {
+            Intent startFreqRespActivity = new Intent(this,FrequencyResponseActivity.class);
+            startActivity(startFreqRespActivity);
         } else if (id == R.id.nav_disconnect) {
-
+            base.drop_connection();
+            this.unregisterReceiver(receiver);
+            Intent startMainScreen = new Intent(getApplicationContext(),MainActivity.class);
+            startActivity(startMainScreen);
+            finish();
         } 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -158,4 +161,6 @@ public class ConnectionScreenActivity extends AppCompatActivity
     public void onClick_displayConsolSwitch(View view){
         consolEnabled = ((Switch)view).isChecked();
     }
+
+
 }
