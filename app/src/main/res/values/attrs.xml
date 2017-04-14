@@ -9,4 +9,26 @@
         <attr name="scaleTextSize" format="dimension"></attr>
         <attr name="readingTextSize" format="dimension"></attr>
     </declare-styleable>
+    <string-array name="waveforms_array">
+        <item>Sinusoidal wave</item>
+        <item>Square wave</item>
+        <item>Triangle wave</item>
+        <item>Noise</item>
+    </string-array>
+    <string-array name="periodUnits_array">
+        <item>S</item>
+        <item>mS</item>
+        <item>uS</item>
+    </string-array>
+    <string-array name="freqUnits_array">
+        <item>Hz</item>
+        <item>kHz</item>
+        <item>Mhz</item>
+    </string-array>
+    <string-array name="amplUnits_array">
+        <item>V</item>
+        <item>mV</item>
+        <item>uV</item>
+    </string-array>
+
 </resources>

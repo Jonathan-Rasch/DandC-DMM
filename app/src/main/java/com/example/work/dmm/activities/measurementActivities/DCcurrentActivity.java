@@ -123,6 +123,7 @@ public class DCcurrentActivity extends AppCompatActivity {
         filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
         filter.addAction(MessageCode.PARSED_DATA_RESISTANCE);
         filter.addAction(MessageCode.PARSED_DATA_FREQ_RESP);
+        filter.addAction(MessageCode.SIGGEN_ACK);
         registerReceiver(receiver,filter);
 
         //Line Chart

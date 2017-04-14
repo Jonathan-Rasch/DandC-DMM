@@ -58,11 +58,12 @@
 
     <Button
         android:id="@+id/btn_setPeriod"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:text="Set"
+        android:layout_alignBaseline="@id/editText_period_SigGen"
         android:layout_alignEnd="@+id/spinner_SigGen"
-        android:layout_alignBaseline="@id/editText_period_SigGen"/>
+        android:onClick="onSetPeriodClick"
+        android:text="Set" />
 
     // FREQUENCY SETTING
 
@@ -85,13 +86,22 @@
         android:layout_alignBottom="@+id/txtv_period"
         android:layout_centerHorizontal="true" />
 
+    <Spinner
+        android:id="@+id/spinner_freqUnit_SigGen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/txtv_frequency"
+        android:layout_toStartOf="@+id/btn_setFrequency"
+        android:layout_toEndOf="@+id/editText_freq_SigGen" />
+
     <Button
         android:id="@+id/btn_setFrequency"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:text="Set"
         android:layout_alignBaseline="@+id/editText_freq_SigGen"
-        android:layout_alignEnd="@+id/spinner_SigGen" />
+        android:layout_alignEnd="@+id/spinner_SigGen"
+        android:onClick="onSetFreqClick"
+        android:text="Set" />
 
     // AMPLITUDE SETTING
 
@@ -99,7 +109,7 @@
         android:id="@+id/txtv_amplitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="125dp"
+        android:layout_marginTop="120dp"
         android:text="Amplitude:"
         android:layout_below="@+id/LineChart_SigGen"
         android:layout_alignStart="@+id/txtv_frequency" />
@@ -114,22 +124,32 @@
         android:layout_alignBottom="@+id/txtv_frequency"
         android:layout_centerHorizontal="true" />
 
+    <Spinner
+        android:id="@+id/spinner_AmplUnit_SigGen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/txtv_amplitude"
+        android:layout_toStartOf="@+id/btn_setFrequency"
+        android:layout_toEndOf="@+id/editText_freq_SigGen" />
+
     <Button
         android:id="@+id/btn_setAmplitude"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:text="Set"
         android:layout_alignBaseline="@+id/editText_Amplitude_SigGen"
-        android:layout_alignEnd="@+id/spinner_SigGen" />
+        android:layout_alignEnd="@+id/spinner_SigGen"
+        android:onClick="onSetAmplClick"
+        android:text="Set" />
 
     <Button
         android:id="@+id/btn_sigGenSendToDmm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send signal settings to DMM"
-        android:layout_marginTop="160dp"
         android:layout_below="@+id/LineChart_SigGen"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="160dp"
+        android:onClick="onSendClick"
+        android:text="Send signal settings to DMM" />
 
 
 </RelativeLayout>

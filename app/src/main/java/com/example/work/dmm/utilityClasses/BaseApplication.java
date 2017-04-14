@@ -242,6 +242,9 @@ public class BaseApplication extends Application {
                 * r: the frequency at which the value is taken (in Hz)*/
                 intent_to_send = new Intent(MessageCode.PARSED_DATA_FREQ_RESP);
                 break;
+            case MessageCode.SIG_GEN_MODE:
+                intent_to_send = new Intent(MessageCode.SIGGEN_ACK);
+                break;
             default:
                 Log.e("parse_and_send","invalid mode: "+mode);
                 break;

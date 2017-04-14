@@ -36,6 +36,10 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String intentAction= intent.getAction();
             if(intentAction != MessageCode.PARSED_DATA_DC_VOLTAGE){
+                //packet has wrong mode, tell DMM to switch to voltage mode
+                Intent change_mode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
+                change_mode.putExtra(MessageCode.MODE,MessageCode.DC_VOLTAGE_MODE);
+                sendBroadcast(change_mode);
                 return;
             }
             int range = intent.getIntExtra(MessageCode.RANGE,-1);
@@ -97,6 +101,10 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         //registering the broadcast receiver
         IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
+        filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
+        filter.addAction(MessageCode.PARSED_DATA_RESISTANCE);
+        filter.addAction(MessageCode.PARSED_DATA_FREQ_RESP);
+        filter.addAction(MessageCode.SIGGEN_ACK);
         registerReceiver(broadcastReceiver,filter);
         //obtaining views
         seekBar = (SeekBar) findViewById(R.id.seekBar1);
