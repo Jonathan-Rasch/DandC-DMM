@@ -101,6 +101,7 @@ public class Speedometer extends View implements SpeedChangeListener {
         scalePaint.setShadowLayer(5f, 0f, 0f, Color.RED);
         scalePaint.setColor(Color.BLACK);
 
+
         readingPaint = new Paint(scalePaint);
         readingPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         offMarkPaint.setShadowLayer(3f, 0f, 0f, Color.WHITE);

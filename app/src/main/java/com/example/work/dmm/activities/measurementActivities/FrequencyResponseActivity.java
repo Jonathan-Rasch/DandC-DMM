@@ -20,6 +20,7 @@ import com.example.work.dmm.displayAndVisualisationClasses.Log10AxisValueFormatt
 import com.example.work.dmm.utilityClasses.MessageCode;
 import com.example.work.dmm.R;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -186,6 +187,9 @@ public class FrequencyResponseActivity extends AppCompatActivity {
             dataSet.setColor(Color.BLUE);
             dataSet.setValueTextColor(Color.BLACK);
             LineData lineData = new LineData(dataSet);
+            Description desc = new Description();
+            desc.setText("X: Frequency Y: Gain");
+            logchart.setDescription(desc);
             logchart.setData(lineData);
             logchart.invalidate(); // refresh
             logchart.notifyDataSetChanged();

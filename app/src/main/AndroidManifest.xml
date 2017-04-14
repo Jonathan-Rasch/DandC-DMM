@@ -33,7 +33,8 @@
         <activity
             android:name=".activities.measurementActivities.VoltageOscilloscopeActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".activities.measurementActivities.FrequencyResponseActivity"></activity>
+        <activity android:name=".activities.measurementActivities.FrequencyResponseActivity" />
+        <activity android:name=".activities.measurementActivities.DCcurrentActivity"></activity>
     </application>
 
 </manifest>

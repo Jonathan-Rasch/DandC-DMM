@@ -18,6 +18,7 @@ import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.work.dmm.activities.measurementActivities.DCcurrentActivity;
 import com.example.work.dmm.utilityClasses.BaseApplication;
 import com.example.work.dmm.utilityClasses.MessageCode;
 import com.example.work.dmm.R;
@@ -146,7 +147,8 @@ public class ConnectionScreenActivity extends AppCompatActivity
             Intent startVoltageActivity = new Intent(this,DCvoltageActivity.class);
             startActivity(startVoltageActivity);
         } else if (id == R.id.nav_Current) {
-
+            Intent startCurrentActivity = new Intent(this,DCcurrentActivity.class);
+            startActivity(startCurrentActivity);
         } else if (id == R.id.nav_Resistance) {
 
         } else if (id == R.id.nav_freqResp) {
