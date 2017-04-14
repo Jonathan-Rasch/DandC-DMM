@@ -1,14 +1,13 @@
-package com.example.work.dmm;
+package com.example.work.dmm.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.SpannableStringBuilder;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.example.work.dmm.utilityClasses.BaseApplication;
+import com.example.work.dmm.R;
 
 public class SettingsActivity extends AppCompatActivity {
     private static final String TAG= "SettingsActivity";
@@ -21,6 +20,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        getSupportActionBar().setTitle("Application Settings");
         editText_maxDataPoints = (EditText) findViewById(R.id.editText_MaxDataPoints);
         confirmIdChange = (Button)findViewById(R.id.btn_accpetNewID);
         confirmMaxDataPointsChange = (Button)findViewById(R.id.btn_acceptNewMaxDataPoints);

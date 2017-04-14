@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.work.dmm.ConnectionScreenActivity"
+    tools:context="com.example.work.dmm.activities.ConnectionScreenActivity"
     tools:showIn="@layout/app_bar_connection_screen">
 
     <TextView

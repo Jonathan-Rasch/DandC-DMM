@@ -1,4 +1,4 @@
-package com.example.work.dmm;
+package com.example.work.dmm.activities.measurementActivities;
 
 import android.app.Dialog;
 import android.support.v4.app.DialogFragment;
@@ -15,13 +15,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.work.dmm.utilityClasses.BaseApplication;
+import com.example.work.dmm.displayAndVisualisationClasses.Log10AxisValueFormatter;
+import com.example.work.dmm.utilityClasses.MessageCode;
+import com.example.work.dmm.R;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,7 +30,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class FrequencyResponseActivity extends AppCompatActivity {
     private static LineChart logchart;
@@ -66,6 +66,7 @@ public class FrequencyResponseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_frequency_response);
+        getSupportActionBar().setTitle("Frequency response mode");
         /*setting up the log linear chart*/
         logchart = (LineChart) findViewById(R.id.freqRespGraph);
         logchart.getXAxis().setValueFormatter(new Log10AxisValueFormatter());
@@ -197,4 +198,10 @@ public class FrequencyResponseActivity extends AppCompatActivity {
         logchart.invalidate();
     }
 
+    @Override
+    public void onBackPressed() {
+        unregisterReceiver(broadcastReceiver);
+        this.finish();
+        super.onBackPressed();
+    }
 }

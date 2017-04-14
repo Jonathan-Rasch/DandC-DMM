@@ -1,4 +1,4 @@
-package com.example.work.dmm;
+package com.example.work.dmm.displayAndVisualisationClasses;
 
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;

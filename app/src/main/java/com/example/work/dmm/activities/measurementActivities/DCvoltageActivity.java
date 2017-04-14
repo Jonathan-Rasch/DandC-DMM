@@ -1,4 +1,4 @@
-package com.example.work.dmm;
+package com.example.work.dmm.activities.measurementActivities;
 
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -10,15 +10,17 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
 
+import com.example.work.dmm.utilityClasses.BaseApplication;
+import com.example.work.dmm.utilityClasses.MessageCode;
+import com.example.work.dmm.R;
+import com.example.work.dmm.displayAndVisualisationClasses.Speedometer;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -31,7 +33,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 public class DCvoltageActivity extends AppCompatActivity {
     private static BaseApplication base;
@@ -113,6 +114,7 @@ public class DCvoltageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dcvoltage);
+        getSupportActionBar().setTitle("Voltage mode");
         base = (BaseApplication)getApplicationContext();
         logVoltageButton = (Button) findViewById(R.id.btn_exportData);
         gauge = (Speedometer) findViewById(R.id.gauge);

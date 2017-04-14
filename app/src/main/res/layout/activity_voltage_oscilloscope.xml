@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.work.dmm.VoltageOscilloscopeActivity">
+    tools:context=".activities.measurementActivities.VoltageOscilloscopeActivity">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:minWidth="40dp">
 
-        <com.example.work.dmm.VerticalSeekBar
+        <com.example.work.dmm.displayAndVisualisationClasses.VerticalSeekBar
             android:id="@+id/seekBar1"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"

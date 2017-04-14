@@ -1,4 +1,4 @@
-package com.example.work.dmm;
+package com.example.work.dmm.utilityClasses;
 
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 import android.widget.Toast;
-import java.util.ArrayList;
 
 /**
  * Created by Work on 13/02/2017.

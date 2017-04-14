@@ -1,10 +1,10 @@
-package com.example.work.dmm;
+package com.example.work.dmm.utilityClasses;
 
 /**
  * Created by Work on 29/01/2017.
  */
 
-abstract class MessageCode {
+public abstract class MessageCode {
     /*message codes for sending the received data to the relevant activity (ie voltage or current)*/
     public static final String MSG_READ_DATA = "READ_DATA";
     public static final String PARSED_DATA_DC_VOLTAGE = "PARSED_DATA_DC_VOLTAGE";

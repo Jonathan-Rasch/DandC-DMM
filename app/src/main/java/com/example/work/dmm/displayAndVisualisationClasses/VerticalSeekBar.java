@@ -1,4 +1,4 @@
-package com.example.work.dmm;
+package com.example.work.dmm.displayAndVisualisationClasses;
 
 import android.content.Context;
 import android.graphics.Canvas;

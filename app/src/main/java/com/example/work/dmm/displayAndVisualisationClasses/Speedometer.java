@@ -1,4 +1,4 @@
-package com.example.work.dmm;
+package com.example.work.dmm.displayAndVisualisationClasses;
 
         import android.content.Context;
         import android.content.res.TypedArray;
@@ -11,6 +11,8 @@ package com.example.work.dmm;
         import android.util.AttributeSet;
         import android.util.Log;
         import android.view.View;
+
+        import com.example.work.dmm.R;
 
 /**
  * DEVELOPED BY Nelson R. Perez - bilthon@gmail.com

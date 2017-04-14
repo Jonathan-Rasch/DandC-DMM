@@ -1,4 +1,4 @@
-package com.example.work.dmm;
+package com.example.work.dmm.activities;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,9 +13,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.work.dmm.utilityClasses.BaseApplication;
+import com.example.work.dmm.utilityClasses.MessageCode;
+import com.example.work.dmm.R;
+import com.example.work.dmm.utilityClasses.clientBluetoothConnection;
 import com.skyfishjy.library.RippleBackground;
 
 public class MainActivity extends AppCompatActivity {
@@ -118,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         base = ((BaseApplication)this.getApplicationContext());
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setTitle("Connect to DMM");
 
         //Get search animation reference
         rippleBackground = (RippleBackground)findViewById(R.id.content);
@@ -155,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
             base.ts("Bluetooth disabled, please enable bluetooth");
             tv_bluetoothStatus.setText("OFF");
             Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBluetoothIntent,MessageCode.ENABLE_BLUETOOTH_REQ);
+            startActivityForResult(enableBluetoothIntent, MessageCode.ENABLE_BLUETOOTH_REQ);
         }else{//bluetooth on, start to search for devices
             tv_bluetoothStatus.setText("ON");
             //setting the bluetooth adapter in base class

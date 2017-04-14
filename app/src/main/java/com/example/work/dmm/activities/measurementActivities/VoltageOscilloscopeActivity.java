@@ -1,19 +1,19 @@
-package com.example.work.dmm;
+package com.example.work.dmm.activities.measurementActivities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.ViewGroup;
+import android.view.View;
 import android.widget.SeekBar;
 
+import com.example.work.dmm.utilityClasses.MessageCode;
+import com.example.work.dmm.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -23,7 +23,6 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class VoltageOscilloscopeActivity extends AppCompatActivity {
     private SeekBar seekBar;
@@ -94,6 +93,8 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_voltage_oscilloscope);
         getSupportActionBar().hide();
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         //registering the broadcast receiver
         IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
         registerReceiver(broadcastReceiver,filter);

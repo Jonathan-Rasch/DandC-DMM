@@ -5,7 +5,7 @@
     android:id="@+id/activity_dcvoltage"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.work.dmm.DCvoltageActivity">
+    tools:context=".activities.measurementActivities.DCvoltageActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
 
-        <com.example.work.dmm.Speedometer
+        <com.example.work.dmm.displayAndVisualisationClasses.Speedometer
             android:id="@+id/gauge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

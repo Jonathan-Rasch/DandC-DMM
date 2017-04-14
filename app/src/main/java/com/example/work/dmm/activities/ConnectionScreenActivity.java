@@ -1,4 +1,4 @@
-package com.example.work.dmm;
+package com.example.work.dmm.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -17,6 +17,12 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import com.example.work.dmm.utilityClasses.BaseApplication;
+import com.example.work.dmm.utilityClasses.MessageCode;
+import com.example.work.dmm.R;
+import com.example.work.dmm.activities.measurementActivities.DCvoltageActivity;
+import com.example.work.dmm.activities.measurementActivities.FrequencyResponseActivity;
 
 import java.util.LinkedList;
 
@@ -67,12 +73,13 @@ public class ConnectionScreenActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //setting up the look of the activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection_screen);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        
-
+        getSupportActionBar().setTitle("Connection overview");
+        //nav drawer setup
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
