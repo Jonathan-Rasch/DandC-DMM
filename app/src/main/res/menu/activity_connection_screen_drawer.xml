@@ -23,6 +23,10 @@
                 android:id="@+id/nav_freqResp"
                 android:icon="@drawable/ic_menu_slideshow"
                 android:title="Frequency response" />
+            <item
+                android:id="@+id/nav_SigGen"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="Signal Generator" />
 
         </group>
 

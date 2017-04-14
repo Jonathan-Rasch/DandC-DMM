@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.work.dmm.activities.measurementActivities.SignalGeneratorActivity">
+
+    <Spinner
+        android:id="@+id/spinner_SigGen"
+        android:layout_width="368dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/LineChart_SigGen"
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
+        android:layout_below="@id/spinner_SigGen"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp"/>
+
+    // PERIOD SETTING
+
+    <TextView
+        android:id="@+id/txtv_period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/spinner_SigGen"
+        android:layout_below="@+id/LineChart_SigGen"
+        android:layout_marginTop="18dp"
+        android:text="Period:" />
+
+    <EditText
+        android:id="@+id/editText_period_SigGen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="3"
+        android:inputType="number"
+        android:layout_alignBaseline="@+id/txtv_period"
+        android:layout_alignBottom="@+id/txtv_period"
+        android:layout_centerHorizontal="true" />
+
+    <Spinner
+        android:id="@+id/spinner_PeriodUnit_SigGen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/txtv_period"
+        android:layout_toStartOf="@+id/btn_setPeriod"
+        android:layout_toEndOf="@+id/editText_period_SigGen" />
+
+    <Button
+        android:id="@+id/btn_setPeriod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set"
+        android:layout_alignEnd="@+id/spinner_SigGen"
+        android:layout_alignBaseline="@id/editText_period_SigGen"/>
+
+    // FREQUENCY SETTING
+
+    <TextView
+        android:id="@+id/txtv_frequency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Frequency:"
+        android:layout_marginTop="70dp"
+        android:layout_below="@+id/LineChart_SigGen"
+        android:layout_alignStart="@+id/txtv_period" />
+
+    <EditText
+        android:id="@+id/editText_freq_SigGen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="3"
+        android:inputType="number"
+        android:layout_alignBaseline="@+id/txtv_frequency"
+        android:layout_alignBottom="@+id/txtv_period"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/btn_setFrequency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set"
+        android:layout_alignBaseline="@+id/editText_freq_SigGen"
+        android:layout_alignEnd="@+id/spinner_SigGen" />
+
+    // AMPLITUDE SETTING
+
+    <TextView
+        android:id="@+id/txtv_amplitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="125dp"
+        android:text="Amplitude:"
+        android:layout_below="@+id/LineChart_SigGen"
+        android:layout_alignStart="@+id/txtv_frequency" />
+
+    <EditText
+        android:id="@+id/editText_Amplitude_SigGen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="3"
+        android:inputType="number"
+        android:layout_alignBaseline="@+id/txtv_amplitude"
+        android:layout_alignBottom="@+id/txtv_frequency"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/btn_setAmplitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set"
+        android:layout_alignBaseline="@+id/editText_Amplitude_SigGen"
+        android:layout_alignEnd="@+id/spinner_SigGen" />
+
+    <Button
+        android:id="@+id/btn_sigGenSendToDmm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send signal settings to DMM"
+        android:layout_marginTop="160dp"
+        android:layout_below="@+id/LineChart_SigGen"
+        android:layout_centerHorizontal="true" />
+
+
+</RelativeLayout>

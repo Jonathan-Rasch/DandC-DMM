@@ -38,7 +38,6 @@ import java.util.List;
 public class DCvoltageActivity extends AppCompatActivity {
     private static BaseApplication base;
     private static LineChart loggingLineChart;
-    private Button logVoltageButton;
     private Speedometer gauge;
     boolean isLogging = false;
     private int xoffset = 0;
@@ -117,7 +116,6 @@ public class DCvoltageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dcvoltage);
         getSupportActionBar().setTitle("Voltage mode");
         base = (BaseApplication)getApplicationContext();
-        logVoltageButton = (Button) findViewById(R.id.btn_exportData);
         gauge = (Speedometer) findViewById(R.id.gauge);
         gauge.setMax(10);
         gauge.setMin(-10);

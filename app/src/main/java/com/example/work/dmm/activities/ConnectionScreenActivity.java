@@ -19,6 +19,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.work.dmm.activities.measurementActivities.DCcurrentActivity;
+import com.example.work.dmm.activities.measurementActivities.SignalGeneratorActivity;
 import com.example.work.dmm.utilityClasses.BaseApplication;
 import com.example.work.dmm.utilityClasses.MessageCode;
 import com.example.work.dmm.R;
@@ -150,10 +151,13 @@ public class ConnectionScreenActivity extends AppCompatActivity
             Intent startCurrentActivity = new Intent(this,DCcurrentActivity.class);
             startActivity(startCurrentActivity);
         } else if (id == R.id.nav_Resistance) {
-
+            // TODO: 14/04/2017 IMPLEMENT
         } else if (id == R.id.nav_freqResp) {
             Intent startFreqRespActivity = new Intent(this,FrequencyResponseActivity.class);
             startActivity(startFreqRespActivity);
+        }else if (id == R.id.nav_SigGen) {
+            Intent startSigGenActivity = new Intent(this,SignalGeneratorActivity.class);
+            startActivity(startSigGenActivity);
         } else if (id == R.id.nav_disconnect) {
             base.drop_connection();
             this.unregisterReceiver(receiver);

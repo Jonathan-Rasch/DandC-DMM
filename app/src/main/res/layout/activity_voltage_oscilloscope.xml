@@ -31,8 +31,7 @@
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/oscilloscopeChart"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/btn_exportData" />
+            android:layout_height="match_parent" />
 
     </RelativeLayout>
 
