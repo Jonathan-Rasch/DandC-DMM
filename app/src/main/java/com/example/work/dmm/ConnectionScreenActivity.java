@@ -86,6 +86,7 @@ public class ConnectionScreenActivity extends AppCompatActivity
         IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
         filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
         filter.addAction(MessageCode.PARSED_DATA_RESISTANCE);
+        filter.addAction(MessageCode.PARSED_DATA_FREQ_RESP);
         registerReceiver(receiver,filter);
 
         //getting views

@@ -1,7 +1,9 @@
 package com.example.work.dmm;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -9,6 +11,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -30,8 +34,8 @@ import java.util.List;
 import java.util.Random;
 
 public class DCvoltageActivity extends AppCompatActivity {
-    private BaseApplication base;
-    private LineChart loggingLineChart;
+    private static BaseApplication base;
+    private static LineChart loggingLineChart;
     private Button logVoltageButton;
     private Speedometer gauge;
     boolean isLogging = false;
@@ -39,7 +43,7 @@ public class DCvoltageActivity extends AppCompatActivity {
     private float voltage=0;
     private boolean currentVoltageLogged = false;
 
-    private ArrayList<Entry> entry_list = new ArrayList<Entry>();
+    private static ArrayList<Entry> entry_list = new ArrayList<Entry>();
 
     private String[] unitsForRanges = {"V","mV","mV","mV"};
     private float[] maxValuesForRanges = {10,1000,100,10};
@@ -190,48 +194,8 @@ public class DCvoltageActivity extends AppCompatActivity {
     }
 
     public void onClickExportData(View view){
-        File root   = Environment.getExternalStorageDirectory();
-        File dir    =   new File (root.getAbsolutePath() + "/DMM_Saved_Logs");
-        if(!dir.exists()){
-            dir.mkdirs();
-        }
-        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-        File file   =   new File(dir, "VoltageLog_"+currentDateTimeString+".txt");
-        StringBuilder dataString = new StringBuilder("");
-        ArrayList<Entry> copyList = (ArrayList<Entry>) entry_list.clone();
-        for(int i=0;i<copyList.size();i++){
-            String dataPoint = "x:"+copyList.get(i).getX()+" y:"+copyList.get(i).getY()+"\n";
-            dataString.append(dataPoint);
-        }
-        String data = dataString.toString();
-        try {
-            if (data.length()>0) {
-                FileOutputStream out = new FileOutputStream(file);
-                out.write(data.getBytes());
-                out.close();
-                // try to send file via email
-                Uri fileLocation  =   Uri.fromFile(file);
-                Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "DMM Voltage data");
-                sendIntent.putExtra(Intent.EXTRA_STREAM, fileLocation);
-                sendIntent.setType("text/html");
-                startActivity(sendIntent);
-            }
-        } catch (Exception e) {
-            base.ts("ERROR encountered when trying to export data.");
-            e.printStackTrace();
-        }
-    }
-
-    public void onClickExportImage(View view){
-        if(entry_list.size()<= 0){
-            base.t("Graph empty, aborting image export");
-            return;
-        }
-        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-        String imageName =   "VoltageGraphImage_"+currentDateTimeString;
-        loggingLineChart.saveToGallery(imageName,100);
-        base.ts("Image saved to Gallery as: "+imageName);
+        DialogFragment exportDialog = new exportDialogFragment();
+        exportDialog.show(getSupportFragmentManager(),"exportFragmentDcVoltage");
     }
 
     public void onClickClearLog(View view){
@@ -256,6 +220,84 @@ public class DCvoltageActivity extends AppCompatActivity {
         loggingLineChart.setData(lineData);
         loggingLineChart.invalidate(); // refresh
         loggingLineChart.notifyDataSetChanged();//Causes redraw when we add data. I imagine we'll initiate
+    }
+
+    public static class exportDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            String[] items = {"Export chart data points and send them via email",
+                    "Save chart image to the phone image gallery",
+                    "Cancel"};
+            builder.setTitle("Chart export options")
+                    .setItems(items, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which){
+                                case 0:
+                                    exportData();
+                                    break;
+                                case 1:
+                                    exportImage();
+                                    break;
+                                case 2:
+                                    base.ts("Export canceled.");
+                                    return;
+                            }
+                        }
+                    });
+            return builder.create();
+        }
+    }
+
+    private static void  exportData(){
+        if(entry_list.size()<=0){
+            base.ts("No chart data to export, Aborting.");
+            return;
+        }
+        File root   = Environment.getExternalStorageDirectory();
+        File dir    =   new File (root.getAbsolutePath() + "/DMM_Saved_Logs");
+        if(!dir.exists()){
+            dir.mkdirs();
+        }
+        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+        File file   =   new File(dir, "VoltageLog_"+currentDateTimeString+".txt");
+        StringBuilder dataString = new StringBuilder("");
+        ArrayList<Entry> copyList = new ArrayList<>(entry_list);
+        for(int i=0;i<copyList.size();i++){
+            String dataPoint = "x:"+copyList.get(i).getX()+" y:"+copyList.get(i).getY()+"\n";
+            dataString.append(dataPoint);
+        }
+        String data = dataString.toString();
+        try {
+            if (data.length()>0) {
+                FileOutputStream out = new FileOutputStream(file);
+                out.write(data.getBytes());
+                out.close();
+                // try to send file via email
+                Uri fileLocation  =   Uri.fromFile(file);
+                Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "DMM Voltage data");
+                sendIntent.putExtra(Intent.EXTRA_STREAM, fileLocation);
+                sendIntent.setType("text/html");
+                sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                base.startActivity(sendIntent);
+            }
+        } catch (Exception e) {
+            base.ts("ERROR encountered when trying to export data.");
+            e.printStackTrace();
+        }
+    }
+
+    private static void exportImage(){
+        if(entry_list.size()<= 0){
+            base.t("Graph empty, aborting image export");
+            return;
+        }
+        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+        String imageName =   "VoltageGraphImage_"+currentDateTimeString;
+        loggingLineChart.saveToGallery(imageName,100);
+        base.ts("Image saved to Gallery as: "+imageName);
     }
 
     @Override

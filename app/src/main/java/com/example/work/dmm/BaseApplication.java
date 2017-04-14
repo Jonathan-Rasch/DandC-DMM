@@ -61,6 +61,12 @@ public class BaseApplication extends Application {
                         parse_read_data(intent.getByteArrayExtra(MessageCode.MSG_READ_DATA));
                         break;
                     case MessageCode.DMM_CHANGE_MODE_REQUEST:
+                        if(connection == null){
+                            ts("connection is null, are you in DEBUG mode ? if not then this is an " +
+                                    "error since a change mode request has been issued to a DMM that" +
+                                    "is not currently connected.");
+                            return;
+                        }
                         //telling the DMM to switch to the given mode
                         int mode= intent.getIntExtra(MessageCode.MODE,-1);
                         if (mode != -1 && mode != MessageCode.FREQ_RESP_MODE) {
@@ -217,6 +223,10 @@ public class BaseApplication extends Application {
         //sending message to relevant activity:
         Intent intent_to_send = new Intent(MessageCode.ERROR);
         switch (mode){
+            /*package format <m:x;v:y;r:z>
+                * m: stands for mode, which is an int value defined in MessageCOde
+                * v: value
+                * r: range int value, also defined in MessageCode*/
             case MessageCode.DC_VOLTAGE_MODE:
                 intent_to_send = new Intent(MessageCode.PARSED_DATA_DC_VOLTAGE);
                 break;
