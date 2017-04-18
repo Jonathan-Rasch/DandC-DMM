@@ -23,6 +23,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/oscilloscope_chart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteX="0dp"
@@ -31,7 +32,14 @@
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/oscilloscopeChart"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="280dp"/>
+
+        <TextView
+            android:id="@+id/oscilloscope_pkpkVoltage_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/oscilloscopeChart"
+            android:text="Voltage(pk-pk):"/>
 
     </RelativeLayout>
 

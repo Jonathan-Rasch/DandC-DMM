@@ -27,8 +27,6 @@ import java.util.List;
 public class VoltageOscilloscopeActivity extends AppCompatActivity {
     private SeekBar seekBar;
     private LineChart lineChart;
-    private int updateCounterResetVal = 50;//reduces number of updates;
-    private int updateCounter = 0;//reduces number of updates;
     private float maxVoltage = 10f;
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         private int previousRange = -1;
@@ -73,14 +71,13 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
                 }
                 previousRange = range;
             }
-            entry_list.add(new Entry((float)t,value));
-            //limit the number of entries TODO
-            if (entry_list.size() > 150){
-                entry_list.remove(0);
-            }
-            updateCounter -= 1;
-            if(updateCounter <= 0){
-                updateCounter = updateCounterResetVal;
+            if(frameDetection(value)){
+                //create new entry list
+                entry_list = new ArrayList<>();
+                for(int i =0;i<frame.size();i++){
+                    Entry newEntry = new Entry((float)i,frame.get(i));
+                    entry_list.add(newEntry);
+                }
                 genChart();
             }
         }
@@ -134,8 +131,7 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
                 t += ((float)delay)/1000;
                 //values so that they are sometimes out of range
                 double sineArg= (t*2*Math.PI);
-                voltage = (float)Math.sin(sineArg)*5;
-                Log.e("blah","voltage="+voltage+" Range="+1);
+                voltage = (float)Math.sin(sineArg)*5f;
                 Intent I = new Intent(MessageCode.PARSED_DATA_DC_VOLTAGE);
                 I.putExtra(MessageCode.VALUE,voltage);
                 I.putExtra(MessageCode.RANGE,0);
@@ -144,6 +140,78 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
             }
         }, delay);
         /*DEBUG END*/
+    }
+
+    private float a;
+    private boolean aValTaken = false;
+    private float b;
+    private boolean frameStarted = false;
+    private float maximumValue = 0;
+    private float minimumValue = 0;
+    private ArrayList<Float> frame = new ArrayList<>();
+
+    /**
+     * obtaines an array of one period of the input signal
+     * @param newValue
+     * @return returns true if frame successfully captured.
+     */
+    private boolean frameDetection(float newValue){
+        /*first part of algorythm is to detect the starting point of the frame*/
+        if(!frameStarted){
+            /*obtaining first and second value for comparison*/
+            if(!aValTaken){
+                a = newValue;
+                /*if a > 0 then already on rising slope and past V=0, disregard and wait for next cycle*/
+                if(a > 0){
+                    return false;
+                }
+                aValTaken = true;
+                return false;
+            } else {
+                b = newValue;
+            }
+            /*is current edge rising edge ?*/
+            if (!(b > a)){
+                /*not a rising edge, reset*/
+                aValTaken = false;
+                return false;
+            }
+            /*Now determine the point where the line crosses the V=0 point on the axis*/
+            if((a < 0 && b == 0) || (a < 0 && b > 0)){
+                frame = new ArrayList<>();
+                frame.add(b);
+            }else if (a == 0 && b > 0){
+                frame = new ArrayList<>();
+                frame.add(a);
+                frame.add(b);
+            }else{// V=0 point not crossed
+                a = b;
+                return false;
+            }
+            frameStarted = true;
+            aValTaken = false;
+            maximumValue = 0;
+            minimumValue = 0;
+            return false;
+        }else{
+            //test for new maximum value
+            if(newValue > maximumValue){
+                maximumValue = newValue;
+            }else if(newValue < minimumValue){
+                minimumValue = newValue;
+            }
+            //test if rising slope and crossing V=0, would mean frame is done
+            float prevVal = frame.get(frame.size()-1);
+            if((prevVal < 0 && newValue == 0) || (prevVal < 0 && newValue > 0) || (prevVal == 0 && newValue > 0)){
+                //frame complete !
+                frameStarted = false;
+                frame.add(newValue);
+                return true;
+            } else{// frame not complete
+                frame.add(newValue);
+                return false;
+            }
+        }
     }
 
     private ArrayList<Entry> entry_list = new ArrayList<>();
@@ -183,5 +251,10 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
         lineChart.invalidate();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        this.unregisterReceiver(broadcastReceiver);
+        super.onBackPressed();
+        this.finish();
+    }
 }
