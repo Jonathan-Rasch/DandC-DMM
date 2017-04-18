@@ -42,11 +42,11 @@
         android:id="@+id/editText_period_SigGen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="3"
-        android:inputType="number"
         android:layout_alignBaseline="@+id/txtv_period"
         android:layout_alignBottom="@+id/txtv_period"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:ems="3"
+        android:inputType="numberDecimal" />
 
     <Spinner
         android:id="@+id/spinner_PeriodUnit_SigGen"
@@ -80,11 +80,11 @@
         android:id="@+id/editText_freq_SigGen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="3"
-        android:inputType="number"
         android:layout_alignBaseline="@+id/txtv_frequency"
         android:layout_alignBottom="@+id/txtv_period"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:ems="3"
+        android:inputType="numberDecimal" />
 
     <Spinner
         android:id="@+id/spinner_freqUnit_SigGen"
@@ -118,11 +118,11 @@
         android:id="@+id/editText_Amplitude_SigGen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="3"
-        android:inputType="number"
         android:layout_alignBaseline="@+id/txtv_amplitude"
         android:layout_alignBottom="@+id/txtv_frequency"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:ems="3"
+        android:inputType="numberDecimal" />
 
     <Spinner
         android:id="@+id/spinner_AmplUnit_SigGen"
