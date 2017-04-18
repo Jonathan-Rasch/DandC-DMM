@@ -59,21 +59,19 @@ public class BaseApplication extends Application {
                         //message from the connection containing the received packet
                         parse_read_data(intent.getByteArrayExtra(MessageCode.MSG_READ_DATA));
                         break;
-                    case MessageCode.DMM_CHANGE_MODE_REQUEST:
+                    case MessageCode.DMM_CHANGE_MODE_REQUEST://telling the DMM to switch to the given mode
                         if(connection == null){
                             ts("connection is null, are you in DEBUG mode ? if not then this is an " +
                                     "error since a change mode request has been issued to a DMM that" +
                                     "is not currently connected.");
                             return;
                         }
-                        //telling the DMM to switch to the given mode
                         int mode= intent.getIntExtra(MessageCode.MODE,-1);
                         if (mode != -1 && mode != MessageCode.FREQ_RESP_MODE) {
                             String message = "<m:"+String.valueOf(mode)+">";
                             connection.write(message.getBytes());
                             Log.d("wrote:",message);
                         }else if (mode == MessageCode.FREQ_RESP_MODE){//mode change request for freq resp contains extra data
-                            //TODO needs to be parsed in STM32 code
                             int startFreqKhz = intent.getIntExtra(MessageCode.FREQ_RESP_START_FREQ,-1);
                             int endFreqKhz = intent.getIntExtra(MessageCode.FREQ_RESP_END_FREQ,-1);
                             int numberOfSteps = intent.getIntExtra(MessageCode.FREQ_RESP_STEPS,-1);
@@ -82,6 +80,17 @@ public class BaseApplication extends Application {
                                 return;
                             }
                             String message = "<m:"+String.valueOf(mode)+";start:"+startFreqKhz+";end:"+endFreqKhz+";steps:"+numberOfSteps+">";
+                            connection.write(message.getBytes());
+                            Log.d("wrote:",message);
+                        }else if(mode == MessageCode.SIG_GEN_MODE){//mode change request for SigGen contains extra data
+                            int signalFrequency = intent.getIntExtra(MessageCode.SIGGEN_FREQ,-1);
+                            float signalAmplitude = intent.getFloatExtra(MessageCode.SIGGEN_AMPL,-1);
+                            String wavetype = intent.getStringExtra(MessageCode.SIGGEN_SIGTYPE);
+                            if(signalFrequency <0 || signalAmplitude < 0 || wavetype == null){
+                                Log.e(TAG,"Invalid signal generator parameters. Sending aborted");
+                                return;
+                            }
+                            String message = "<m:"+mode+";freq:"+signalFrequency+";ampl:"+signalAmplitude+";type:"+wavetype+">";
                             connection.write(message.getBytes());
                             Log.d("wrote:",message);
                         }
@@ -222,7 +231,7 @@ public class BaseApplication extends Application {
         //sending message to relevant activity:
         Intent intent_to_send = new Intent(MessageCode.ERROR);
         switch (mode){
-            /*package format <m:x;v:y;r:z>
+            /*package format <m:int;v:float;r:int>
                 * m: stands for mode, which is an int value defined in MessageCOde
                 * v: value
                 * r: range int value, also defined in MessageCode*/
@@ -236,13 +245,20 @@ public class BaseApplication extends Application {
                 intent_to_send = new Intent(MessageCode.PARSED_DATA_RESISTANCE);
                 break;
             case MessageCode.FREQ_RESP_MODE://freq resp
-                /*freq response package uses the same format as all other <m:x;v:y;r:z>
+                /*freq response package uses the same format as all other <m:int;v:float;r:int>
                 * m: stands for mode, which is 4 for freq resp packets
                 * v: Gain for this specific frequency value
                 * r: the frequency at which the value is taken (in Hz)*/
                 intent_to_send = new Intent(MessageCode.PARSED_DATA_FREQ_RESP);
                 break;
             case MessageCode.SIG_GEN_MODE:
+                /*tells the app that the DMM is carrying out its orders and generating signal. this
+                * also allows the app to check that the settings of the DMM are still correct, and
+                * to adjust them if needed by sending mode change request with correct settings.
+                * SigGen package uses the same format as all other <m:int;v:float;r:int>
+                * m: should always be 5 for sigGen packets
+                * v: should be the amplitude of the signal that is being generated
+                * r: should be frequency of signal in Hz*/
                 intent_to_send = new Intent(MessageCode.SIGGEN_ACK);
                 break;
             default:
