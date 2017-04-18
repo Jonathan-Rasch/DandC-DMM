@@ -1,4 +1,4 @@
-package com.example.work.dmm.activities.measurementActivities;
+package com.example.work.dmm.activities.measurementActivities.Level3;
 
 import android.app.Dialog;
 import android.support.v4.app.DialogFragment;

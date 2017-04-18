@@ -1,4 +1,4 @@
-package com.example.work.dmm.activities.measurementActivities;
+package com.example.work.dmm.activities.measurementActivities.Level1;
 
 import android.app.Dialog;
 import android.content.BroadcastReceiver;

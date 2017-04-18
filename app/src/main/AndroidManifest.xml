@@ -26,16 +26,17 @@
             android:name=".activities.ConnectionScreenActivity"
             android:label="@string/title_activity_connection_screen"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.measurementActivities.DCvoltageActivity" />
+        <activity android:name=".activities.measurementActivities.Level1.DCvoltageActivity" />
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name=".activities.measurementActivities.VoltageOscilloscopeActivity"
+            android:name=".activities.measurementActivities.Level2.VoltageOscilloscopeActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".activities.measurementActivities.FrequencyResponseActivity" />
-        <activity android:name=".activities.measurementActivities.DCcurrentActivity" />
-        <activity android:name=".activities.measurementActivities.SignalGeneratorActivity"></activity>
+        <activity android:name=".activities.measurementActivities.Level3.FrequencyResponseActivity" />
+        <activity android:name=".activities.measurementActivities.Level1.DCcurrentActivity" />
+        <activity android:name=".activities.measurementActivities.Level3.SignalGeneratorActivity" />
+        <activity android:name=".activities.measurementActivities.Level1.ResistanceActivity"></activity>
     </application>
 
 </manifest>

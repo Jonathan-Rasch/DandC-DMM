@@ -1,4 +1,4 @@
-package com.example.work.dmm.activities.measurementActivities;
+package com.example.work.dmm.activities.measurementActivities.Level1;
 
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -14,9 +14,9 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Switch;
 
+import com.example.work.dmm.activities.measurementActivities.Level2.VoltageOscilloscopeActivity;
 import com.example.work.dmm.utilityClasses.BaseApplication;
 import com.example.work.dmm.utilityClasses.MessageCode;
 import com.example.work.dmm.R;
