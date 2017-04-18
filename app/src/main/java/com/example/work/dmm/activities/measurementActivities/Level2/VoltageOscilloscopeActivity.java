@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.example.work.dmm.utilityClasses.MessageCode;
 import com.example.work.dmm.R;
@@ -73,6 +74,8 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
             }
             if(frameDetection(value)){
                 //create new entry list
+                float pkpk = Math.abs(maximumValue)+Math.abs(minimumValue);
+                peakToPeakText.setText("Voltage(pk-pk):"+pkpk+"V");
                 entry_list = new ArrayList<>();
                 for(int i =0;i<frame.size();i++){
                     Entry newEntry = new Entry((float)i,frame.get(i));
@@ -88,7 +91,7 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
     final int delay = 10; //milliseconds
     private double t = 0f;//used to generate sine wave
     /*DEBUG END*/
-
+    TextView peakToPeakText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +107,7 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
         filter.addAction(MessageCode.SIGGEN_ACK);
         registerReceiver(broadcastReceiver,filter);
         //obtaining views
+        peakToPeakText= (TextView) findViewById(R.id.oscilloscope_pkpkVoltage_textview);
         seekBar = (SeekBar) findViewById(R.id.seekBar1);
         lineChart = (LineChart) findViewById(R.id.oscilloscopeChart);
         lineChart.setAutoScaleMinMaxEnabled(false);
@@ -162,7 +166,7 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
             if(!aValTaken){
                 a = newValue;
                 /*if a > 0 then already on rising slope and past V=0, disregard and wait for next cycle*/
-                if(a > 0){
+                if(a > level){
                     return false;
                 }
                 aValTaken = true;
@@ -177,10 +181,10 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
                 return false;
             }
             /*Now determine the point where the line crosses the V=0 point on the axis*/
-            if((a < 0 && b == 0) || (a < 0 && b > 0)){
+            if((a < level && b == level) || (a < level && b > level)){
                 frame = new ArrayList<>();
                 frame.add(b);
-            }else if (a == 0 && b > 0){
+            }else if (a == level && b > level){
                 frame = new ArrayList<>();
                 frame.add(a);
                 frame.add(b);
@@ -202,7 +206,7 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
             }
             //test if rising slope and crossing V=0, would mean frame is done
             float prevVal = frame.get(frame.size()-1);
-            if((prevVal < 0 && newValue == 0) || (prevVal < 0 && newValue > 0) || (prevVal == 0 && newValue > 0)){
+            if((prevVal < level && newValue == level) || (prevVal < level && newValue > level) || (prevVal == level && newValue > level)){
                 //frame complete !
                 frameStarted = false;
                 frame.add(newValue);
@@ -215,6 +219,7 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
     }
 
     private ArrayList<Entry> entry_list = new ArrayList<>();
+    private float level = 0;
     private void genChart() {
         //Generate new dataset
         List<Entry> entries = entry_list;
@@ -226,8 +231,9 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
         maxMinEntrySet.setColor(Color.TRANSPARENT);
         float seekBarProgressPercentage =  ((float)seekBar.getProgress()/(float)seekBar.getMax());
         float multiplier = (float)(2*seekBarProgressPercentage-1);// function that is -1 at 0% and 1 at 100%
-        indicatorLineEntries.add(new Entry(entries.get(0).getX(),maxVoltage*multiplier));
-        indicatorLineEntries.add(new Entry(entries.get(entries.size()-1).getX(),maxVoltage*multiplier));
+        level = maxVoltage*multiplier;
+        indicatorLineEntries.add(new Entry(entries.get(0).getX(),level));
+        indicatorLineEntries.add(new Entry(entries.get(entries.size()-1).getX(),level));
         LineDataSet dataSet = new LineDataSet(entries, "Voltage"); // add entries to dataset
         dataSet.setDrawCircles(false);
         LineDataSet levelSet = new LineDataSet(indicatorLineEntries, "level"); // add entries to dataset
