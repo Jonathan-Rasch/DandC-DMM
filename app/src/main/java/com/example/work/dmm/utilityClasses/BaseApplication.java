@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -119,8 +120,17 @@ public class BaseApplication extends Application {
         filter.addAction(MessageCode.CUSTOM_ACTION_SERIAL);
         filter.addAction(MessageCode.DMM_CHANGE_MODE_REQUEST);
         this.registerReceiver(receiver,filter);
+        vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);;
     }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//Haptic feedback
+////////////////////////////////////////////////////////////////////////////////////////////////////
+    private Vibrator vibrator;
+    public void vibratePulse(long durationMs){
+        if(vibrator.hasVibrator()){
+            vibrator.vibrate(durationMs);
+        }
+    }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //connection related methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////

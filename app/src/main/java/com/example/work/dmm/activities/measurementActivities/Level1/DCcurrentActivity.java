@@ -60,6 +60,7 @@ public class DCcurrentActivity extends AppCompatActivity {
                 parseRange(intent.getIntExtra(MessageCode.RANGE,0));
                 current = intent.getFloatExtra(MessageCode.VALUE,0f);
                 float adjustedCurrent = valueToRangeAdjustment(currentRange, current);
+                rangeBoundaryProximity(adjustedCurrent,minValuesForRanges[currentRange],maxValuesForRanges[currentRange]);
                 gauge.onSpeedChanged(adjustedCurrent);
                 if (isLogging) {
                     Entry e =new Entry((float)xoffset, current);
@@ -88,6 +89,14 @@ public class DCcurrentActivity extends AppCompatActivity {
             gauge.setMax(maxValuesForRanges[range]);
             gauge.setUnit(unitsForRanges[range]);
             currentRange = range;
+        }
+    }
+
+    private void rangeBoundaryProximity(float value,float minVal,float maxVal){
+        if(value > maxVal || value < minVal){
+            base.vibratePulse(500);
+        }else if(value >= maxVal*0.9f || value <= minVal*1.1f){
+            base.vibratePulse(250);
         }
     }
 

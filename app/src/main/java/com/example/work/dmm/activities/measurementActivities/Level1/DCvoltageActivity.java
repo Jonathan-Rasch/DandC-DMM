@@ -10,9 +10,11 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Switch;
 
@@ -34,6 +36,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class DCvoltageActivity extends AppCompatActivity {
     private static BaseApplication base;
@@ -58,6 +61,7 @@ public class DCvoltageActivity extends AppCompatActivity {
                 parseRange(intent.getIntExtra(MessageCode.RANGE,0));
                 voltage = intent.getFloatExtra(MessageCode.VALUE,0f);
                 float adjustedVoltage = valueToRangeAdjustment(currentRange,voltage);
+                rangeBoundaryProximity(adjustedVoltage,minValuesForRanges[currentRange],maxValuesForRanges[currentRange]);
                 gauge.onSpeedChanged(adjustedVoltage);
                 if (isLogging) {
                     Entry e =new Entry((float)xoffset,voltage);
@@ -104,11 +108,20 @@ public class DCvoltageActivity extends AppCompatActivity {
         }
         return 0;
     }
-    /*DEBUG*//*
+
+    private void rangeBoundaryProximity(float value,float minVal,float maxVal){
+        if(value > maxVal || value < minVal){
+            base.vibratePulse(500);
+        }else if(value >= maxVal*0.9f || value <= minVal*1.1f){
+            base.vibratePulse(250);
+        }
+    }
+
+    //DEBUG
     final Handler h = new Handler();
     final int delay = 100; //milliseconds
     Random r = new Random(System.currentTimeMillis());
-    *//*DEBUG END*/
+    //DEBUG END
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +157,7 @@ public class DCvoltageActivity extends AppCompatActivity {
         });
 
 
-   /* *//*DEBUG*//*
+    //DEBUG
         h.postDelayed(new Runnable(){
             public void run(){
                 int range = r.nextInt(4);
@@ -172,7 +185,7 @@ public class DCvoltageActivity extends AppCompatActivity {
                 h.postDelayed(this, delay);
             }
         }, delay);
-    *//*DEBUG END*/
+    //DEBUG END
 
     }
 

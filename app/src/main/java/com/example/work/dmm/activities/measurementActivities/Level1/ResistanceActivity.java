@@ -56,8 +56,9 @@ public class ResistanceActivity extends AppCompatActivity {
             if (intent.getAction() == MessageCode.PARSED_DATA_RESISTANCE) {
                 parseRange(intent.getIntExtra(MessageCode.RANGE,0));
                 resistance = intent.getFloatExtra(MessageCode.VALUE,0f);
-                float adjustedVoltage = valueToRangeAdjustment(currentRange, resistance);
-                gauge.onSpeedChanged(adjustedVoltage);
+                float adjustedResistance = valueToRangeAdjustment(currentRange, resistance);
+                rangeBoundaryProximity(adjustedResistance,minValuesForRanges[currentRange],maxValuesForRanges[currentRange]);
+                gauge.onSpeedChanged(adjustedResistance);
                 if (isLogging) {
                     Entry e =new Entry((float)xoffset, resistance);
                     entry_list.add(e);
@@ -75,6 +76,14 @@ public class ResistanceActivity extends AppCompatActivity {
             }
         }
     };
+
+    private void rangeBoundaryProximity(float value,float minVal,float maxVal){
+        if(value > maxVal || value < minVal){
+            base.vibratePulse(500);
+        }else if(value >= maxVal*0.9f || value <= minVal*1.1f){
+            base.vibratePulse(250);
+        }
+    }
 
     /*take the range value and set the correct units for display in gauge*/
     private void parseRange(int range){
