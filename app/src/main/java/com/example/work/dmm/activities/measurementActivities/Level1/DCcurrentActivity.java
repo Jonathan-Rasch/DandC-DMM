@@ -17,6 +17,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
 
+import com.example.work.dmm.activities.measurementActivities.Level2.CurrentOscilloscopeActivity;
+import com.example.work.dmm.activities.measurementActivities.Level2.VoltageOscilloscopeActivity;
 import com.example.work.dmm.utilityClasses.BaseApplication;
 import com.example.work.dmm.utilityClasses.MessageCode;
 import com.example.work.dmm.R;
@@ -160,7 +162,8 @@ public class DCcurrentActivity extends AppCompatActivity {
     }
 
     public void onClickOscilloscopeMode(View view){
-        throw new UnsupportedOperationException("NOT YET IMPLEMENTED");
+        Intent start_oscilloscope_activity_intent = new Intent(this,CurrentOscilloscopeActivity.class);
+        startActivity(start_oscilloscope_activity_intent);
     }
 
     public void onClickExportData(View view){

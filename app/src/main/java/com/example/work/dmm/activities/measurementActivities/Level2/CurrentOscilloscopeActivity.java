@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -25,19 +24,19 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VoltageOscilloscopeActivity extends AppCompatActivity {
+public class CurrentOscilloscopeActivity extends AppCompatActivity {
     private SeekBar seekBar;
     private LineChart lineChart;
-    private float maxVoltage = 10f;
+    private float maxCurrent = 10f;
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         private int previousRange = -1;
         @Override
         public void onReceive(Context context, Intent intent) {
             String intentAction= intent.getAction();
-            if(intentAction != MessageCode.PARSED_DATA_DC_VOLTAGE){
+            if(intentAction != MessageCode.PARSED_DATA_DC_CURRENT){
                 //packet has wrong mode, tell DMM to switch to voltage mode
                 Intent change_mode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
-                change_mode.putExtra(MessageCode.MODE,MessageCode.DC_VOLTAGE_MODE);
+                change_mode.putExtra(MessageCode.MODE,MessageCode.DC_CURRENT_MODE);
                 sendBroadcast(change_mode);
                 return;
             }
@@ -50,24 +49,24 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
                 //adjust ranges
                 switch (range){
                     case 0:
-                        maxVoltage = 10f;
-                        lineChart.setVisibleYRange(-10f,10f, YAxis.AxisDependency.LEFT);
-                        lineChart.setVisibleYRange(-10f,10f, YAxis.AxisDependency.RIGHT);
-                        break;
-                    case 1:
-                        maxVoltage = 1f;
+                        maxCurrent = 10f;
                         lineChart.setVisibleYRange(-1f,1f, YAxis.AxisDependency.LEFT);
                         lineChart.setVisibleYRange(-1f,1f, YAxis.AxisDependency.RIGHT);
                         break;
-                    case 2:
-                        maxVoltage = 0.1f;
+                    case 1:
+                        maxCurrent = 0.1f;
                         lineChart.setVisibleYRange(-0.1f,0.1f, YAxis.AxisDependency.LEFT);
                         lineChart.setVisibleYRange(-0.1f,0.1f, YAxis.AxisDependency.RIGHT);
                         break;
-                    case 3:
-                        maxVoltage = 0.01f;
+                    case 2:
+                        maxCurrent = 0.01f;
                         lineChart.setVisibleYRange(-0.01f,0.01f, YAxis.AxisDependency.LEFT);
                         lineChart.setVisibleYRange(-0.01f,0.01f, YAxis.AxisDependency.RIGHT);
+                        break;
+                    case 3:
+                        maxCurrent = 0.001f;
+                        lineChart.setVisibleYRange(-0.001f,0.001f, YAxis.AxisDependency.LEFT);
+                        lineChart.setVisibleYRange(-0.001f,0.001f, YAxis.AxisDependency.RIGHT);
                         break;
                 }
                 previousRange = range;
@@ -75,7 +74,7 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
             if(frameDetection(value)){
                 //create new entry list
                 float pkpk = Math.abs(maximumValue)+Math.abs(minimumValue);
-                peakToPeakText.setText("Voltage(pk-pk):"+pkpk+"V");
+                peakToPeakText.setText("Current(pk-pk):"+pkpk+"A");
                 entry_list = new ArrayList<>();
                 for(int i =0;i<frame.size();i++){
                     Entry newEntry = new Entry((float)i,frame.get(i));
@@ -86,16 +85,11 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
         }
     };
 
-    /*DEBUG*/
-    final Handler h = new Handler();
-    final int delay = 10; //milliseconds
-    private double t = 0f;//used to generate sine wave
-    /*DEBUG END*/
     TextView peakToPeakText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_voltage_oscilloscope);
+        setContentView(R.layout.activity_current_oscilloscope);
         getSupportActionBar().hide();
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
@@ -107,14 +101,14 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
         filter.addAction(MessageCode.SIGGEN_ACK);
         registerReceiver(broadcastReceiver,filter);
         //obtaining views
-        peakToPeakText= (TextView) findViewById(R.id.oscilloscope_pkpkVoltage_textview);
-        seekBar = (SeekBar) findViewById(R.id.seekBar1);
-        lineChart = (LineChart) findViewById(R.id.oscilloscopeChart);
+        peakToPeakText= (TextView) findViewById(R.id.CurrentOscilloscope_pkpkCurrent_textview);
+        seekBar = (SeekBar) findViewById(R.id.CurrentOscilloscope_seekBar);
+        lineChart = (LineChart) findViewById(R.id.CurrentOscilloscope_Chart);
         lineChart.setAutoScaleMinMaxEnabled(false);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (entry_list.size()>0) {
+                if (entry_list.size() > 0) {
                     genChart();
                 }
             }
@@ -129,23 +123,6 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
 
             }
         });
-
-        /*DEBUG*/
-        h.postDelayed(new Runnable(){
-            public void run(){
-                float voltage = 0;
-                t += ((float)delay)/1000;
-                //values so that they are sometimes out of range
-                double sineArg= (t*2*Math.PI);
-                voltage = (float)Math.sin(sineArg)*5f;
-                Intent I = new Intent(MessageCode.PARSED_DATA_DC_VOLTAGE);
-                I.putExtra(MessageCode.VALUE,voltage);
-                I.putExtra(MessageCode.RANGE,0);
-                sendBroadcast(I);
-                h.postDelayed(this, delay);
-            }
-        }, delay);
-        /*DEBUG END*/
     }
 
     private float a;
@@ -227,16 +204,16 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
         List<Entry> entries = entry_list;
         List<Entry> indicatorLineEntries = new ArrayList<>();
         List<Entry> maxMinEntries = new ArrayList<>();
-        maxMinEntries.add(new Entry(entries.get(0).getX(),maxVoltage));
-        maxMinEntries.add(new Entry(entries.get(0).getX(),-maxVoltage));
+        maxMinEntries.add(new Entry(entries.get(0).getX(), maxCurrent));
+        maxMinEntries.add(new Entry(entries.get(0).getX(),-maxCurrent));
         LineDataSet maxMinEntrySet = new LineDataSet(maxMinEntries,"");
         maxMinEntrySet.setColor(Color.TRANSPARENT);
         float seekBarProgressPercentage =  ((float)seekBar.getProgress()/(float)seekBar.getMax());
         float multiplier = (float)(2*seekBarProgressPercentage-1);// function that is -1 at 0% and 1 at 100%
-        level = maxVoltage*multiplier;
+        level = maxCurrent *multiplier;
         indicatorLineEntries.add(new Entry(entries.get(0).getX(),level));
         indicatorLineEntries.add(new Entry(entries.get(entries.size()-1).getX(),level));
-        LineDataSet dataSet = new LineDataSet(entries, "Voltage"); // add entries to dataset
+        LineDataSet dataSet = new LineDataSet(entries, "Current"); // add entries to dataset
         dataSet.setDrawCircles(false);
         LineDataSet levelSet = new LineDataSet(indicatorLineEntries, "level"); // add entries to dataset
         levelSet.setDrawCircles(false);

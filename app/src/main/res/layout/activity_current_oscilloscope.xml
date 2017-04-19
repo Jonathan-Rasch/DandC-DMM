@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context="com.example.work.dmm.activities.measurementActivities.Level2.CurrentOscilloscopeActivity">
+
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:minWidth="40dp">
+
+    <com.example.work.dmm.displayAndVisualisationClasses.VerticalSeekBar
+        android:id="@+id/CurrentOscilloscope_seekBar"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="bottom"
+        android:max="1000"
+        android:progress="1" />
+</LinearLayout>
+
+
+<RelativeLayout
+    android:id="@+id/CurrentOscilloscope_chart_RelativeLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="8dp">
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/CurrentOscilloscope_Chart"
+        android:layout_width="match_parent"
+        android:layout_height="290dp"/>
+
+    <TextView
+        android:id="@+id/CurrentOscilloscope_pkpkCurrent_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/CurrentOscilloscope_Chart"
+        android:text="Current(pk-pk):"/>
+
+</RelativeLayout>
+
+</LinearLayout>

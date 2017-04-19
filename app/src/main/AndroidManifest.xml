@@ -36,7 +36,9 @@
         <activity android:name=".activities.measurementActivities.Level3.FrequencyResponseActivity" />
         <activity android:name=".activities.measurementActivities.Level1.DCcurrentActivity" />
         <activity android:name=".activities.measurementActivities.Level3.SignalGeneratorActivity" />
-        <activity android:name=".activities.measurementActivities.Level1.ResistanceActivity"></activity>
+        <activity android:name=".activities.measurementActivities.Level1.ResistanceActivity" />
+        <activity android:name=".activities.measurementActivities.Level2.CurrentOscilloscopeActivity"
+                android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>
