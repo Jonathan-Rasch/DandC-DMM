@@ -128,6 +128,7 @@ public class BaseApplication extends Application {
         filter.addAction(MessageCode.PARSED_DATA_FREQ_RESP);
         filter.addAction(MessageCode.SIGGEN_ACK);
         filter.addAction(MessageCode.PARSED_LIGHT_INTENSITY);
+        filter.addAction(MessageCode.PARSED_CAPACITANCE);
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //Haptic feedback
@@ -279,8 +280,14 @@ public class BaseApplication extends Application {
                 intent_to_send = new Intent(MessageCode.SIGGEN_ACK);
                 break;
             case MessageCode.LIGHT_INTENSITY_MODE:
-
                 intent_to_send = new Intent(MessageCode.PARSED_LIGHT_INTENSITY);
+                break;
+            case MessageCode.CAPACITANCE_MODE:
+                /*package uses the same format as all other <m:int;v:float;r:int>
+                * m: mode
+                * v: float for capacitance value
+                * r: NOT USED*/
+                intent_to_send = new Intent(MessageCode.PARSED_CAPACITANCE);
                 break;
             default:
                 Log.e("parse_and_send","invalid mode: "+mode);

@@ -39,17 +39,28 @@ public class ConnectionScreenActivity extends AppCompatActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             if (MessageCode.PARSED_DATA_DC_VOLTAGE.equals(intent.getAction())) {
-                String message = "DC Voltage:"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f));
+                String message = "[Voltage]"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f));
                 displayReceivedPacket(message);
             }else if(MessageCode.PARSED_DATA_DC_CURRENT.equals(intent.getAction())){
-                String message = "DC Current:"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f));
+                String message = "[Current]"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f));
                 displayReceivedPacket(message);
             }else if(MessageCode.PARSED_DATA_RESISTANCE.equals(intent.getAction())){
-                String message = "Resistance:"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f));
+                String message = "[Resistance] value:"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f)+
+                " range:"+String.valueOf(intent.getFloatExtra(MessageCode.RANGE,0f)));
+                displayReceivedPacket(message);
+            }else if(MessageCode.PARSED_DATA_FREQ_RESP.equals(intent.getAction())){
+                String message = "[FreqResp] Vout/Vin:"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f)+
+                        " @frequency:"+String.valueOf(intent.getFloatExtra(MessageCode.RANGE,0f)));
+                displayReceivedPacket(message);
+            }else if(MessageCode.SIGGEN_ACK.equals(intent.getAction())){
+                String message = "[SigGen] amplitude:"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f)+
+                        " @frequency:"+String.valueOf(intent.getFloatExtra(MessageCode.RANGE,0f)));
+                displayReceivedPacket(message);
+            }else if(MessageCode.PARSED_CAPACITANCE.equals(intent.getAction())){
+                String message = "[Capacitance] value:"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f));
                 displayReceivedPacket(message);
             }
-        }
-    };
+    }};
 
     private LinkedList<String> message_list = new LinkedList<>();
     private static final int CONSOL_BUFFER_SIZE = 30; // how many entries the console holds
@@ -94,14 +105,10 @@ public class ConnectionScreenActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //registering brodcast listener
-        IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
-        filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
-        filter.addAction(MessageCode.PARSED_DATA_RESISTANCE);
-        filter.addAction(MessageCode.PARSED_DATA_FREQ_RESP);
-        registerReceiver(receiver,filter);
+        base = (BaseApplication)getApplicationContext();
+        registerReceiver(receiver,base.FILTER);
 
         //getting views
-        base = (BaseApplication)getApplicationContext();
         tv_device_address = (TextView)findViewById(R.id.connectionScreen_device_address);
         tv_device_name = (TextView)findViewById(R.id.connectionScreen_device_name);
         tv_received_data = (TextView)findViewById(R.id.tv_received_data);

@@ -1,5 +1,8 @@
 package com.example.work.dmm.activities;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +18,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Button confirmIdChange;
     private Button confirmMaxDataPointsChange;
     private BaseApplication base;
+    static final String ACTION_SCAN = "com.google.zxing.client.android.SCAN";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +210,46 @@ public class SettingsActivity extends AppCompatActivity {
         }else{
             base.ts("Steps set to: "+value);
             base.setNumberOfSteps(value);
+        }
+    }
+
+    public void onCLickScanQR(View view){
+        try {
+            //start the scanning activity from the com.google.zxing.client.android.SCAN intent
+            Intent intent = new Intent(ACTION_SCAN);
+            intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+            startActivityForResult(intent, 0);
+        } catch (ActivityNotFoundException anfe) {
+            //on catch, show the download dialog
+            base.ts("no scanner found");
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                //get the extras that are returned from the intent
+                String contents = data.getStringExtra("SCAN_RESULT");
+                String format = data.getStringExtra("SCAN_RESULT_FORMAT");
+                base.ts("Content:" + contents);
+                //FF:FF:FF:FF:FF:FF
+                String[] address = contents.split(":");
+                if(address.length==6){
+                    ((EditText)findViewById(R.id.adress1)).setText(address[0]);
+                    ((EditText)findViewById(R.id.adress2)).setText(address[1]);
+                    ((EditText)findViewById(R.id.adress3)).setText(address[2]);
+                    ((EditText)findViewById(R.id.adress4)).setText(address[3]);
+                    ((EditText)findViewById(R.id.adress5)).setText(address[4]);
+                    ((EditText)findViewById(R.id.adress6)).setText(address[5]);
+                    onConfirmButton_Address(new View(this));
+                }else{
+                    base.ts("Invalid address");
+                }
+            }
+            if(resultCode == RESULT_CANCELED){
+                base.ts("Canceled");
+            }
         }
     }
 
