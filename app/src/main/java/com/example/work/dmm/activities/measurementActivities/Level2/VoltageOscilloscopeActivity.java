@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.work.dmm.utilityClasses.BaseApplication;
 import com.example.work.dmm.utilityClasses.MessageCode;
 import com.example.work.dmm.R;
 import com.github.mikephil.charting.charts.LineChart;
@@ -86,11 +87,7 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
         }
     };
 
-    /*DEBUG*/
-    final Handler h = new Handler();
-    final int delay = 10; //milliseconds
-    private double t = 0f;//used to generate sine wave
-    /*DEBUG END*/
+    private BaseApplication base;
     TextView peakToPeakText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,12 +97,8 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         //registering the broadcast receiver
-        IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
-        filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
-        filter.addAction(MessageCode.PARSED_DATA_RESISTANCE);
-        filter.addAction(MessageCode.PARSED_DATA_FREQ_RESP);
-        filter.addAction(MessageCode.SIGGEN_ACK);
-        registerReceiver(broadcastReceiver,filter);
+        base = (BaseApplication)getApplicationContext();
+        registerReceiver(broadcastReceiver,base.FILTER);
         //obtaining views
         peakToPeakText= (TextView) findViewById(R.id.oscilloscope_pkpkVoltage_textview);
         seekBar = (SeekBar) findViewById(R.id.seekBar1);
@@ -129,23 +122,6 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
 
             }
         });
-
-        /*DEBUG*/
-        h.postDelayed(new Runnable(){
-            public void run(){
-                float voltage = 0;
-                t += ((float)delay)/1000;
-                //values so that they are sometimes out of range
-                double sineArg= (t*2*Math.PI);
-                voltage = (float)Math.sin(sineArg)*5f;
-                Intent I = new Intent(MessageCode.PARSED_DATA_DC_VOLTAGE);
-                I.putExtra(MessageCode.VALUE,voltage);
-                I.putExtra(MessageCode.RANGE,0);
-                sendBroadcast(I);
-                h.postDelayed(this, delay);
-            }
-        }, delay);
-        /*DEBUG END*/
     }
 
     private float a;

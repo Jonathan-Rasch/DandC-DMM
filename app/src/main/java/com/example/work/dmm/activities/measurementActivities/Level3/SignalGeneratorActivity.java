@@ -109,12 +109,7 @@ public class SignalGeneratorActivity extends AppCompatActivity implements Adapte
         AmplitudeUnit.setOnItemSelectedListener(this);
 
         //registering broadcastReceiver
-        IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
-        filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
-        filter.addAction(MessageCode.PARSED_DATA_RESISTANCE);
-        filter.addAction(MessageCode.PARSED_DATA_FREQ_RESP);
-        filter.addAction(MessageCode.SIGGEN_ACK);
-        registerReceiver(broadcastReceiver,filter);
+        registerReceiver(broadcastReceiver,base.FILTER);
 
         //getting edit text views
         chart = (LineChart) findViewById(R.id.LineChart_SigGen);
@@ -252,16 +247,16 @@ public class SignalGeneratorActivity extends AppCompatActivity implements Adapte
             waveformSelector.setBackground(new ColorDrawable(Color.WHITE));
             switch(position){
                 case 0://Sinusoidal wave
-                    sigType = "Sinusoidal";
+                    sigType = "sinusoidal";
                     break;
                 case 1://Square wave
-                    sigType = "Square";
+                    sigType = "square";
                     break;
                 case 2://Triangle wave
-                    sigType = "Triangle";
+                    sigType = "triangle";
                     break;
                 case 3://Noise
-                    sigType = "Noise";
+                    sigType = "noise";
                     break;
             }
         }else if (viewID == R.id.spinner_PeriodUnit_SigGen){
@@ -415,12 +410,12 @@ public class SignalGeneratorActivity extends AppCompatActivity implements Adapte
     LineChart chart;
     private void updateChart(){
         entries = new ArrayList<>();
-        if(sigType.equals("Sinusoidal")){
+        if(sigType.equals("sinusoidal")){
             for(float i=0;i<1;i+=0.01f){
                 Entry e = new Entry(i,sigAmplitude*(float)Math.sin(i*2*Math.PI));
                 entries.add(e);
             }
-        }else if(sigType.equals("Square")){
+        }else if(sigType.equals("square")){
             for(float i=0;i<1;i+=0.01f){
                 if(i<=0.5){
                     Entry e = new Entry(i,sigAmplitude);
@@ -430,13 +425,13 @@ public class SignalGeneratorActivity extends AppCompatActivity implements Adapte
                     entries.add(e);
                 }
             }
-        }else if(sigType.equals("Triangle")){
+        }else if(sigType.equals("triangle")){
             entries.add(new Entry(0f,0f));
             entries.add(new Entry(0.25f,sigAmplitude));
             entries.add(new Entry(0.5f,0f));
             entries.add(new Entry(0.75f,-sigAmplitude));
             entries.add(new Entry(1f,0f));
-        }else if(sigType.equals("Noise")){
+        }else if(sigType.equals("noise")){
             Random r = new Random(System.currentTimeMillis());
             for(float i=0;i<1;i+=0.01f){
                 int sign = r.nextInt(2);

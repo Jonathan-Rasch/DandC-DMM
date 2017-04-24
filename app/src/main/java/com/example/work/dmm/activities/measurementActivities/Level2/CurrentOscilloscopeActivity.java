@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.work.dmm.utilityClasses.BaseApplication;
 import com.example.work.dmm.utilityClasses.MessageCode;
 import com.example.work.dmm.R;
 import com.github.mikephil.charting.charts.LineChart;
@@ -86,6 +87,7 @@ public class CurrentOscilloscopeActivity extends AppCompatActivity {
     };
 
     TextView peakToPeakText;
+    private BaseApplication base;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,12 +96,9 @@ public class CurrentOscilloscopeActivity extends AppCompatActivity {
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         //registering the broadcast receiver
-        IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
-        filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
-        filter.addAction(MessageCode.PARSED_DATA_RESISTANCE);
-        filter.addAction(MessageCode.PARSED_DATA_FREQ_RESP);
-        filter.addAction(MessageCode.SIGGEN_ACK);
-        registerReceiver(broadcastReceiver,filter);
+        base = (BaseApplication)getApplicationContext();
+        registerReceiver(broadcastReceiver,base.FILTER);
+
         //obtaining views
         peakToPeakText= (TextView) findViewById(R.id.CurrentOscilloscope_pkpkCurrent_textview);
         seekBar = (SeekBar) findViewById(R.id.CurrentOscilloscope_seekBar);

@@ -20,6 +20,10 @@
                 android:icon="@drawable/ic_menu_slideshow"
                 android:title="Resistance" />
             <item
+                android:id="@+id/nav_capacitance"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="capacitance" />
+            <item
                 android:id="@+id/nav_freqResp"
                 android:icon="@drawable/ic_menu_slideshow"
                 android:title="Frequency response" />
@@ -27,6 +31,10 @@
                 android:id="@+id/nav_SigGen"
                 android:icon="@drawable/ic_menu_slideshow"
                 android:title="Signal Generator" />
+            <item
+                android:id="@+id/nav_LightIntensity"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="Light meter" />
 
         </group>
 

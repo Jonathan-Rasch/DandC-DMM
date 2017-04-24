@@ -42,6 +42,7 @@ public class BaseApplication extends Application {
     public static int getNumberOfSteps() {return numberOfSteps;}
     public static void setNumberOfSteps(int numberOfSteps) {BaseApplication.numberOfSteps = numberOfSteps;}
 
+    public static IntentFilter FILTER;
     //Bluetooth connection
     private clientBluetoothConnection connection;
     private BluetoothAdapter blueAdapter;
@@ -120,7 +121,13 @@ public class BaseApplication extends Application {
         filter.addAction(MessageCode.CUSTOM_ACTION_SERIAL);
         filter.addAction(MessageCode.DMM_CHANGE_MODE_REQUEST);
         this.registerReceiver(receiver,filter);
-        vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);;
+        vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+        FILTER = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
+        filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
+        filter.addAction(MessageCode.PARSED_DATA_RESISTANCE);
+        filter.addAction(MessageCode.PARSED_DATA_FREQ_RESP);
+        filter.addAction(MessageCode.SIGGEN_ACK);
+        filter.addAction(MessageCode.PARSED_LIGHT_INTENSITY);
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //Haptic feedback
@@ -270,6 +277,10 @@ public class BaseApplication extends Application {
                 * v: should be the amplitude of the signal that is being generated
                 * r: should be frequency of signal in Hz*/
                 intent_to_send = new Intent(MessageCode.SIGGEN_ACK);
+                break;
+            case MessageCode.LIGHT_INTENSITY_MODE:
+
+                intent_to_send = new Intent(MessageCode.PARSED_LIGHT_INTENSITY);
                 break;
             default:
                 Log.e("parse_and_send","invalid mode: "+mode);

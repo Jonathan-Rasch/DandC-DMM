@@ -73,12 +73,7 @@ public class FrequencyResponseActivity extends AppCompatActivity {
         logchart.getXAxis().setValueFormatter(new Log10AxisValueFormatter());
         /*Registering all message types so that application can send switch mode packet if the
         * wrong packet type is received*/
-        IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
-        filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
-        filter.addAction(MessageCode.PARSED_DATA_RESISTANCE);
-        filter.addAction(MessageCode.PARSED_DATA_FREQ_RESP);
-        filter.addAction(MessageCode.SIGGEN_ACK);
-        registerReceiver(broadcastReceiver,filter);
+        registerReceiver(broadcastReceiver,base.FILTER);
         base = (BaseApplication) getApplication();
     }
 

@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Switch;
 
 import com.example.work.dmm.activities.measurementActivities.Level2.VoltageOscilloscopeActivity;
+import com.example.work.dmm.activities.measurementActivities.Level3.LightIntensityActivity;
 import com.example.work.dmm.utilityClasses.BaseApplication;
 import com.example.work.dmm.utilityClasses.MessageCode;
 import com.example.work.dmm.R;
@@ -136,12 +137,7 @@ public class DCvoltageActivity extends AppCompatActivity {
         gauge.setUnit("V");
         /*Registering all message types so that application can send switch mode packet if the
         * wrong packet type is received*/
-        IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
-        filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
-        filter.addAction(MessageCode.PARSED_DATA_RESISTANCE);
-        filter.addAction(MessageCode.PARSED_DATA_FREQ_RESP);
-        filter.addAction(MessageCode.SIGGEN_ACK);
-        registerReceiver(receiver,filter);
+        registerReceiver(receiver,base.FILTER);
 
         //Line Chart
         loggingLineChart = (LineChart) findViewById(R.id.loggingLineChart);
@@ -155,38 +151,6 @@ public class DCvoltageActivity extends AppCompatActivity {
                 toggleAutoLogging();
             }
         });
-
-
-    //DEBUG
-        h.postDelayed(new Runnable(){
-            public void run(){
-                int range = r.nextInt(4);
-                float voltage = 0;
-                //values so that they are sometimes out of range
-                switch (range){
-                    case 0:
-                        voltage = (r.nextFloat()*15+r.nextFloat()*-15);
-                        break;
-                    case 1:
-                        voltage = (r.nextFloat()*1.5f+r.nextFloat()*-1.5f);
-                        break;
-                    case 2:
-                        voltage = (r.nextFloat()*0.15f+r.nextFloat()*-0.15f);
-                        break;
-                    case 3:
-                        voltage = (r.nextFloat()*0.015f+r.nextFloat()*-0.015f);
-                        break;
-                }
-                Log.e("blah","voltage="+voltage+" Range="+range);
-                Intent I = new Intent(MessageCode.PARSED_DATA_DC_VOLTAGE);
-                I.putExtra(MessageCode.VALUE,voltage);
-                I.putExtra(MessageCode.RANGE,range);
-                sendBroadcast(I);
-                h.postDelayed(this, delay);
-            }
-        }, delay);
-    //DEBUG END
-
     }
 
     private void toggleAutoLogging(){
@@ -213,7 +177,7 @@ public class DCvoltageActivity extends AppCompatActivity {
     }
 
     public void onClickExportData(View view){
-        DialogFragment exportDialog = new exportDialogFragment();
+        DialogFragment exportDialog = new DCvoltageActivity.exportDialogFragment();
         exportDialog.show(getSupportFragmentManager(),"exportFragmentDcVoltage");
     }
 

@@ -130,12 +130,7 @@ public class DCcurrentActivity extends AppCompatActivity {
         gauge.setUnit("A");
         /*Registering all message types so that application can send switch mode packet if the
         * wrong packet type is received*/
-        IntentFilter filter = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
-        filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
-        filter.addAction(MessageCode.PARSED_DATA_RESISTANCE);
-        filter.addAction(MessageCode.PARSED_DATA_FREQ_RESP);
-        filter.addAction(MessageCode.SIGGEN_ACK);
-        registerReceiver(receiver,filter);
+        registerReceiver(receiver,base.FILTER);
 
         //Line Chart
         loggingLineChart = (LineChart) findViewById(R.id.loggingLineChart_Current);
@@ -176,7 +171,7 @@ public class DCcurrentActivity extends AppCompatActivity {
     }
 
     public void onClickExportData(View view){
-        DialogFragment exportDialog = new exportDialogFragment();
+        DialogFragment exportDialog = new DCcurrentActivity.exportDialogFragment();
         exportDialog.show(getSupportFragmentManager(),"exportFragmentDcCurrent");
     }
 

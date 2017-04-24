@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.work.dmm.activities.measurementActivities.Level1.DCcurrentActivity;
 import com.example.work.dmm.activities.measurementActivities.Level1.ResistanceActivity;
+import com.example.work.dmm.activities.measurementActivities.Level3.LightIntensityActivity;
 import com.example.work.dmm.activities.measurementActivities.Level3.SignalGeneratorActivity;
 import com.example.work.dmm.utilityClasses.BaseApplication;
 import com.example.work.dmm.utilityClasses.MessageCode;
@@ -160,6 +161,11 @@ public class ConnectionScreenActivity extends AppCompatActivity
         }else if (id == R.id.nav_SigGen) {
             Intent startSigGenActivity = new Intent(this,SignalGeneratorActivity.class);
             startActivity(startSigGenActivity);
+        }else if (id == R.id.nav_LightIntensity) {
+            Intent startLightIntensityActivity = new Intent(this,LightIntensityActivity.class);
+            startActivity(startLightIntensityActivity);
+        }else if (id == R.id.nav_capacitance) {
+            //TODO implement activity
         } else if (id == R.id.nav_disconnect) {
             base.drop_connection();
             this.unregisterReceiver(receiver);
