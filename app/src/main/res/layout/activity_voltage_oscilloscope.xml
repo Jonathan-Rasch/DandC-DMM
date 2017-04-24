@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:minWidth="40dp">
 
-        <com.example.work.dmm.displayAndVisualisationClasses.VerticalSeekBar
+        <com.descon.work.dmm.displayAndVisualisationClasses.VerticalSeekBar
             android:id="@+id/seekBar1"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"

@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
 
-        <com.example.work.dmm.displayAndVisualisationClasses.Speedometer
+        <com.descon.work.dmm.displayAndVisualisationClasses.Speedometer
             android:id="@+id/lightIntensity_gauge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

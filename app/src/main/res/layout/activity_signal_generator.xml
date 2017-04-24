@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.work.dmm.activities.measurementActivities.Level3.SignalGeneratorActivity">
+    tools:context="com.descon.work.dmm.activities.measurementActivities.Level3.SignalGeneratorActivity">
 
     <Spinner
         android:id="@+id/spinner_waveform_SigGen"

@@ -5,7 +5,7 @@
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.work.dmm.activities.measurementActivities.Level1.DCcurrentActivity">
+    tools:context="com.descon.work.dmm.activities.measurementActivities.Level1.DCcurrentActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
 
-        <com.example.work.dmm.displayAndVisualisationClasses.Speedometer
+        <com.descon.work.dmm.displayAndVisualisationClasses.Speedometer
             android:id="@+id/CurrentGauge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

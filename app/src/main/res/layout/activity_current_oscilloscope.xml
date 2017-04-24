@@ -4,7 +4,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-tools:context="com.example.work.dmm.activities.measurementActivities.Level2.CurrentOscilloscopeActivity">
+tools:context="com.descon.work.dmm.activities.measurementActivities.Level2.CurrentOscilloscopeActivity">
 
 <LinearLayout
     android:layout_width="wrap_content"
@@ -12,7 +12,7 @@ tools:context="com.example.work.dmm.activities.measurementActivities.Level2.Curr
     android:orientation="vertical"
     android:minWidth="40dp">
 
-    <com.example.work.dmm.displayAndVisualisationClasses.VerticalSeekBar
+    <com.descon.work.dmm.displayAndVisualisationClasses.VerticalSeekBar
         android:id="@+id/CurrentOscilloscope_seekBar"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
