@@ -115,12 +115,6 @@ public class DCvoltageActivity extends AppCompatActivity {
         }
     }
 
-    //DEBUG
-    final Handler h = new Handler();
-    final int delay = 100; //milliseconds
-    Random r = new Random(System.currentTimeMillis());
-    //DEBUG END
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,7 +128,7 @@ public class DCvoltageActivity extends AppCompatActivity {
         gauge.setUnit("V");
         /*Registering all message types so that application can send switch mode packet if the
         * wrong packet type is received*/
-        registerReceiver(receiver,base.FILTER);
+        registerReceiver(receiver,base.intentFILTER);
 
         //Line Chart
         loggingLineChart = (LineChart) findViewById(R.id.loggingLineChart);

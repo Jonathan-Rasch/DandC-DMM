@@ -108,7 +108,7 @@ public class SignalGeneratorActivity extends AppCompatActivity implements Adapte
         AmplitudeUnit.setOnItemSelectedListener(this);
 
         //registering broadcastReceiver
-        registerReceiver(broadcastReceiver,base.FILTER);
+        registerReceiver(broadcastReceiver,base.intentFILTER);
 
         //getting edit text views
         chart = (LineChart) findViewById(R.id.LineChart_SigGen);

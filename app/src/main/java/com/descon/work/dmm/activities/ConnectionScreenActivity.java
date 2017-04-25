@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.descon.work.dmm.activities.measurementActivities.Level1.DCcurrentActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level1.ResistanceActivity;
+import com.descon.work.dmm.activities.measurementActivities.Level3.CapacitanceActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level3.LightIntensityActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level3.SignalGeneratorActivity;
 import com.descon.work.dmm.utilityClasses.BaseApplication;
@@ -105,7 +106,7 @@ public class ConnectionScreenActivity extends AppCompatActivity
 
         //registering brodcast listener
         base = (BaseApplication)getApplicationContext();
-        registerReceiver(receiver,base.FILTER);
+        registerReceiver(receiver,base.intentFILTER);
 
         //getting views
         tv_device_address = (TextView)findViewById(R.id.connectionScreen_device_address);
@@ -171,7 +172,8 @@ public class ConnectionScreenActivity extends AppCompatActivity
             Intent startLightIntensityActivity = new Intent(this,LightIntensityActivity.class);
             startActivity(startLightIntensityActivity);
         }else if (id == R.id.nav_capacitance) {
-            //TODO implement activity
+            Intent startCapacitanceActivity = new Intent(this,CapacitanceActivity.class);
+            startActivity(startCapacitanceActivity);
         } else if (id == R.id.nav_disconnect) {
             base.drop_connection();
             this.unregisterReceiver(receiver);

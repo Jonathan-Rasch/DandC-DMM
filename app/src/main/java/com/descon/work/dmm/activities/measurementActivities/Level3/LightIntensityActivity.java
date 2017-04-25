@@ -81,7 +81,7 @@ public class LightIntensityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_light_intensity);
         /*Registering all message types so that application can send switch mode packet if the
         * wrong packet type is received*/
-        registerReceiver(receiver,base.FILTER);
+        registerReceiver(receiver,base.intentFILTER);
         //obtaining views
         gauge = (Speedometer) findViewById(R.id.lightIntensity_gauge);
         chart = (LineChart) findViewById(R.id.lightIntensity_loggingLineChart);

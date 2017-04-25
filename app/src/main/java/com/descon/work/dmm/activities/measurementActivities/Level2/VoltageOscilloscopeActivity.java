@@ -27,6 +27,7 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
     private SeekBar seekBar;
     private LineChart lineChart;
     private float maxVoltage = 10f;
+    private float signalFreq= Float.NaN;
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         private int previousRange = -1;
         @Override
@@ -41,6 +42,22 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
             }
             int range = intent.getIntExtra(MessageCode.RANGE,-1);
             float value = intent.getFloatExtra(MessageCode.VALUE,0);
+            int freqInHz = intent.getIntExtra(MessageCode.EXTRA,-1);
+            String freqUnit= "";
+            //parsing frequency
+            if(freqInHz <= 1000){
+                signalFreq = ((float)freqInHz);//Hz
+                freqUnit = "Hz";
+            }else if (freqInHz > 1E3 && freqInHz <= 1E6){
+                signalFreq = (float) (((float)freqInHz)/1E3);//kHz
+                freqUnit = "kHz";
+            }else if (freqInHz > 1E6 && freqInHz <= 1E9){
+                signalFreq = (float) (((float)freqInHz)/1E6);//MHz
+                freqUnit = "MHz";
+            }else{
+                signalFreq = Float.NaN;
+            }
+            String freqString = String.format(" Frequency:%.2f%s",freqUnit,freqUnit);
             //parsing the range
             if(previousRange != range){
                 //reset the chart
@@ -73,7 +90,7 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
             if(frameDetection(value)){
                 //create new entry list
                 float pkpk = Math.abs(maximumValue)+Math.abs(minimumValue);
-                peakToPeakText.setText("Voltage(pk-pk):"+pkpk+"V");
+                peakToPeakText.setText("Voltage(pk-pk):"+pkpk+"V "+freqString);
                 entry_list = new ArrayList<>();
                 for(int i =0;i<frame.size();i++){
                     Entry newEntry = new Entry((float)i,frame.get(i));
@@ -95,7 +112,7 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         //registering the broadcast receiver
         base = (BaseApplication)getApplicationContext();
-        registerReceiver(broadcastReceiver,base.FILTER);
+        registerReceiver(broadcastReceiver,base.intentFILTER);
         //obtaining views
         peakToPeakText= (TextView) findViewById(R.id.oscilloscope_pkpkVoltage_textview);
         seekBar = (SeekBar) findViewById(R.id.seekBar1);

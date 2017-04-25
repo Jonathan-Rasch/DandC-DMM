@@ -128,7 +128,7 @@ public class DCcurrentActivity extends AppCompatActivity {
         gauge.setUnit("A");
         /*Registering all message types so that application can send switch mode packet if the
         * wrong packet type is received*/
-        registerReceiver(receiver,base.FILTER);
+        registerReceiver(receiver,base.intentFILTER);
 
         //Line Chart
         loggingLineChart = (LineChart) findViewById(R.id.loggingLineChart_Current);

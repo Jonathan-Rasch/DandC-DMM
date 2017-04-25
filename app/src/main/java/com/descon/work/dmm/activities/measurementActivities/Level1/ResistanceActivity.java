@@ -125,7 +125,7 @@ public class ResistanceActivity extends AppCompatActivity {
         gauge.setUnit("Ω");
         /*Registering all message types so that application can send switch mode packet if the
         * wrong packet type is received*/
-        registerReceiver(receiver,base.FILTER);
+        registerReceiver(receiver,base.intentFILTER);
 
         //Line Chart
         loggingLineChart = (LineChart) findViewById(R.id.loggingLineChart_Resistance);

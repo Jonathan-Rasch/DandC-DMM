@@ -47,4 +47,5 @@ public abstract class MessageCode {
     public static final String MSG_READ_DATA_SIZE = "MSG_READ_DATA_SIZE";
     public static final String VALUE = "VALUE";
     public static final String RANGE = "RANGE";
+    public static final String EXTRA = "EXTRA";
 }

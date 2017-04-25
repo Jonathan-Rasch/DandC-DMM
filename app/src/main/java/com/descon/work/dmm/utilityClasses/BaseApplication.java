@@ -42,7 +42,7 @@ public class BaseApplication extends Application {
     public static int getNumberOfSteps() {return numberOfSteps;}
     public static void setNumberOfSteps(int numberOfSteps) {BaseApplication.numberOfSteps = numberOfSteps;}
 
-    public static IntentFilter FILTER;
+    public static IntentFilter intentFILTER;
     //Bluetooth connection
     private clientBluetoothConnection connection;
     private BluetoothAdapter blueAdapter;
@@ -122,13 +122,13 @@ public class BaseApplication extends Application {
         filter.addAction(MessageCode.DMM_CHANGE_MODE_REQUEST);
         this.registerReceiver(receiver,filter);
         vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
-        FILTER = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
-        filter.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
-        filter.addAction(MessageCode.PARSED_DATA_RESISTANCE);
-        filter.addAction(MessageCode.PARSED_DATA_FREQ_RESP);
-        filter.addAction(MessageCode.SIGGEN_ACK);
-        filter.addAction(MessageCode.PARSED_LIGHT_INTENSITY);
-        filter.addAction(MessageCode.PARSED_CAPACITANCE);
+        intentFILTER = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
+        intentFILTER.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
+        intentFILTER.addAction(MessageCode.PARSED_DATA_RESISTANCE);
+        intentFILTER.addAction(MessageCode.PARSED_DATA_FREQ_RESP);
+        intentFILTER.addAction(MessageCode.SIGGEN_ACK);
+        intentFILTER.addAction(MessageCode.PARSED_LIGHT_INTENSITY);
+        intentFILTER.addAction(MessageCode.PARSED_CAPACITANCE);
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //Haptic feedback
@@ -198,7 +198,7 @@ public class BaseApplication extends Application {
             Log.e("validate_message","incorrect number of opening/closing tags in message: "+message);
             return false;
         }
-        if (!message.contains("m:") || !message.contains(";v:") || !message.contains(";r:")){
+        if (!message.contains("m:") || !message.contains(";v:") || !message.contains(";r:") || !message.contains(";e:")){
             if(!message.contains("m:")){
                 Log.e("validate_message","message missing 'm:' component. ");
             }
@@ -207,6 +207,9 @@ public class BaseApplication extends Application {
             }
             if(!message.contains(";r:")){
                 Log.e("validate_message","message missing ';r:' component. ");
+            }
+            if(!message.contains(";e:")){
+                Log.e("validate_message","message missing ';e:' component. ");
             }
             return false;
         }
@@ -238,9 +241,18 @@ public class BaseApplication extends Application {
         }
         //Parsing the range of the value
         int range = 0;
-        String range_string = data.substring(data.indexOf(";r:"),data.indexOf(">"));
+        String range_string = data.substring(data.indexOf(";r:")+3,data.indexOf(";e:"));
         try{
             range = Integer.parseInt(range_string);
+        }catch (NumberFormatException e){
+            Log.e("parse_and_send","could not parse range from message:" + data);
+            return;
+        }
+        //Parsing extra field
+        int extra = 0;
+        String extraString = data.substring(data.indexOf(";e:")+3,data.indexOf(">"));
+        try{
+            extra = Integer.parseInt(extraString);
         }catch (NumberFormatException e){
             Log.e("parse_and_send","could not parse range from message:" + data);
             return;
@@ -249,10 +261,11 @@ public class BaseApplication extends Application {
         //sending message to relevant activity:
         Intent intent_to_send = new Intent(MessageCode.ERROR);
         switch (mode){
-            /*package format <m:int;v:float;r:int>
+            /*package format <m:int;v:float;r:int;e:int>
                 * m: stands for mode, which is an int value defined in MessageCOde
                 * v: value
-                * r: range int value, also defined in MessageCode*/
+                * r: range int value, also defined in MessageCode
+                * e: extra, for frequency of signal when doing voltage or current measurements*/
             case MessageCode.DC_VOLTAGE_MODE:
                 intent_to_send = new Intent(MessageCode.PARSED_DATA_DC_VOLTAGE);
                 break;
@@ -263,7 +276,7 @@ public class BaseApplication extends Application {
                 intent_to_send = new Intent(MessageCode.PARSED_DATA_RESISTANCE);
                 break;
             case MessageCode.FREQ_RESP_MODE://freq resp
-                /*freq response package uses the same format as all other <m:int;v:float;r:int>
+                /*freq response package uses the same format as all other <m:int;v:float;r:int;e:int>
                 * m: stands for mode, which is 4 for freq resp packets
                 * v: Gain for this specific frequency value
                 * r: the frequency at which the value is taken (in Hz)*/
@@ -273,7 +286,7 @@ public class BaseApplication extends Application {
                 /*tells the app that the DMM is carrying out its orders and generating signal. this
                 * also allows the app to check that the settings of the DMM are still correct, and
                 * to adjust them if needed by sending mode change request with correct settings.
-                * SigGen package uses the same format as all other <m:int;v:float;r:int>
+                * SigGen package uses the same format as all other <m:int;v:float;r:int;e:int>
                 * m: should always be 5 for sigGen packets
                 * v: should be the amplitude of the signal that is being generated
                 * r: should be frequency of signal in Hz*/
@@ -283,7 +296,7 @@ public class BaseApplication extends Application {
                 intent_to_send = new Intent(MessageCode.PARSED_LIGHT_INTENSITY);
                 break;
             case MessageCode.CAPACITANCE_MODE:
-                /*package uses the same format as all other <m:int;v:float;r:int>
+                /*package uses the same format as all other <m:int;v:float;r:int;e:int>
                 * m: mode
                 * v: float for capacitance value
                 * r: NOT USED*/
@@ -297,6 +310,7 @@ public class BaseApplication extends Application {
         if (intent_to_send.getAction() != MessageCode.ERROR){
             intent_to_send.putExtra(MessageCode.VALUE,value);
             intent_to_send.putExtra(MessageCode.RANGE,range);
+            intent_to_send.putExtra(MessageCode.EXTRA,extra);
             sendBroadcast(intent_to_send);
         }else{
             Log.e("MsgCode","Invalid message mode, send canceled");
