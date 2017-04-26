@@ -53,17 +53,19 @@
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1" />
+
     <Button
         android:id="@+id/capacitance_exportData_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Export DATA"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="@+id/capacitance_logCapacitance_btn"
-        tools:layout_constraintLeft_creator="1"
         android:layout_marginBottom="16dp"
-        app:layout_constraintLeft_toLeftOf="@+id/capacitance_logCapacitance_btn" />
+        android:onClick="onClickExportData"
+        android:text="Export DATA"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/capacitance_logCapacitance_btn"
+        app:layout_constraintRight_toRightOf="@+id/capacitance_logCapacitance_btn"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1" />
 
 </android.support.constraint.ConstraintLayout>

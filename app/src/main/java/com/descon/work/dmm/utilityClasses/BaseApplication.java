@@ -69,7 +69,7 @@ public class BaseApplication extends Application {
                             return;
                         }
                         int mode= intent.getIntExtra(MessageCode.MODE,-1);
-                        if (mode != -1 && mode != MessageCode.FREQ_RESP_MODE) {
+                        if (mode != -1 && mode != MessageCode.FREQ_RESP_MODE && mode != MessageCode.SIG_GEN_MODE) {
                             String message = "<m:"+String.valueOf(mode)+">";
                             connection.write(message.getBytes());
                             Log.d("wrote:",message);
@@ -122,6 +122,7 @@ public class BaseApplication extends Application {
         filter.addAction(MessageCode.DMM_CHANGE_MODE_REQUEST);
         this.registerReceiver(receiver,filter);
         vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+        /*REGISTER ANY NEW ACTION CODES HERE!*/
         intentFILTER = new IntentFilter(MessageCode.PARSED_DATA_DC_VOLTAGE);
         intentFILTER.addAction(MessageCode.PARSED_DATA_DC_CURRENT);
         intentFILTER.addAction(MessageCode.PARSED_DATA_RESISTANCE);
@@ -129,6 +130,7 @@ public class BaseApplication extends Application {
         intentFILTER.addAction(MessageCode.SIGGEN_ACK);
         intentFILTER.addAction(MessageCode.PARSED_LIGHT_INTENSITY);
         intentFILTER.addAction(MessageCode.PARSED_CAPACITANCE);
+        intentFILTER.addAction(MessageCode.PARSED_DIODE_VOLTAGE);
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //Haptic feedback
@@ -292,8 +294,12 @@ public class BaseApplication extends Application {
                 * r: should be frequency of signal in Hz*/
                 intent_to_send = new Intent(MessageCode.SIGGEN_ACK);
                 break;
-            case MessageCode.LIGHT_INTENSITY_MODE:
-                intent_to_send = new Intent(MessageCode.PARSED_LIGHT_INTENSITY);
+            case MessageCode.DIODE_MODE:
+                /*package uses the same format as all other <m:int;v:float;r:int;e:int>
+                * m: mode
+                * v: value of diode, correct diode gets determined via lookup table
+                * r: NOT USED*/
+                intent_to_send = new Intent(MessageCode.PARSED_DIODE_VOLTAGE);
                 break;
             case MessageCode.CAPACITANCE_MODE:
                 /*package uses the same format as all other <m:int;v:float;r:int;e:int>
@@ -301,6 +307,9 @@ public class BaseApplication extends Application {
                 * v: float for capacitance value
                 * r: NOT USED*/
                 intent_to_send = new Intent(MessageCode.PARSED_CAPACITANCE);
+                break;
+            case MessageCode.LIGHT_INTENSITY_MODE:
+                intent_to_send = new Intent(MessageCode.PARSED_LIGHT_INTENSITY);
                 break;
             default:
                 Log.e("parse_and_send","invalid mode: "+mode);

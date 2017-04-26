@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.descon.work.dmm.activities.measurementActivities.Level1.DCcurrentActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level1.ResistanceActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level3.CapacitanceActivity;
+import com.descon.work.dmm.activities.measurementActivities.Level3.DiodeActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level3.LightIntensityActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level3.SignalGeneratorActivity;
 import com.descon.work.dmm.utilityClasses.BaseApplication;
@@ -174,14 +175,16 @@ public class ConnectionScreenActivity extends AppCompatActivity
         }else if (id == R.id.nav_capacitance) {
             Intent startCapacitanceActivity = new Intent(this,CapacitanceActivity.class);
             startActivity(startCapacitanceActivity);
+        }else if (id == R.id.nav_Diode) {
+            Intent startDiodeActivity = new Intent(this,DiodeActivity.class);
+            startActivity(startDiodeActivity);
         } else if (id == R.id.nav_disconnect) {
             base.drop_connection();
             this.unregisterReceiver(receiver);
             Intent startMainScreen = new Intent(getApplicationContext(),MainActivity.class);
             startActivity(startMainScreen);
             finish();
-        } 
-
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

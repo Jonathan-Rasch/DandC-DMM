@@ -10,13 +10,13 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name="com.descon.work.dmm.utilityClasses.BaseApplication"
+        android:name=".utilityClasses.BaseApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.descon.work.dmm.activities.MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,25 +24,26 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.descon.work.dmm.activities.ConnectionScreenActivity"
+            android:name=".activities.ConnectionScreenActivity"
             android:label="@string/title_activity_connection_screen"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.descon.work.dmm.activities.measurementActivities.Level1.DCvoltageActivity" />
+        <activity android:name=".activities.measurementActivities.Level1.DCvoltageActivity" />
         <activity
-            android:name="com.descon.work.dmm.activities.SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name="com.descon.work.dmm.activities.measurementActivities.Level2.VoltageOscilloscopeActivity"
+            android:name=".activities.measurementActivities.Level2.VoltageOscilloscopeActivity"
             android:screenOrientation="landscape" />
-        <activity android:name="com.descon.work.dmm.activities.measurementActivities.Level3.FrequencyResponseActivity" />
-        <activity android:name="com.descon.work.dmm.activities.measurementActivities.Level1.DCcurrentActivity" />
-        <activity android:name="com.descon.work.dmm.activities.measurementActivities.Level3.SignalGeneratorActivity" />
-        <activity android:name="com.descon.work.dmm.activities.measurementActivities.Level1.ResistanceActivity" />
+        <activity android:name=".activities.measurementActivities.Level3.FrequencyResponseActivity" />
+        <activity android:name=".activities.measurementActivities.Level1.DCcurrentActivity" />
+        <activity android:name=".activities.measurementActivities.Level3.SignalGeneratorActivity" />
+        <activity android:name=".activities.measurementActivities.Level1.ResistanceActivity" />
         <activity
-            android:name="com.descon.work.dmm.activities.measurementActivities.Level2.CurrentOscilloscopeActivity"
+            android:name=".activities.measurementActivities.Level2.CurrentOscilloscopeActivity"
             android:screenOrientation="landscape" />
-        <activity android:name="com.descon.work.dmm.activities.measurementActivities.Level3.LightIntensityActivity" />
-        <activity android:name="com.descon.work.dmm.activities.measurementActivities.Level3.CapacitanceActivity"></activity>
+        <activity android:name=".activities.measurementActivities.Level3.LightIntensityActivity" />
+        <activity android:name=".activities.measurementActivities.Level3.CapacitanceActivity" />
+        <activity android:name=".activities.measurementActivities.Level3.DiodeActivity"></activity>
     </application>
 
 </manifest>

@@ -14,6 +14,7 @@ public abstract class MessageCode {
     public static final String SIGGEN_ACK = "PARSED_DATA_FREQ_RESP";//sent periodically from DMM to app to confirm correct siggen settings
     public static final String PARSED_LIGHT_INTENSITY = "PARSED_LIGHT_INTENSITY";
     public static final String PARSED_CAPACITANCE = "PARSED_CAPACITANCE";
+    public static final String PARSED_DIODE_VOLTAGE = "PARSED_DIODE_VOLTAGE";
     public static final String ERROR = "ERROR";
 
     public static final String DMM_CHANGE_MODE_REQUEST = "DMM_CHANGE_MODE_REQUEST";
@@ -25,6 +26,7 @@ public abstract class MessageCode {
     public static final int SIG_GEN_MODE = 5;
     public static final int LIGHT_INTENSITY_MODE = 6;
     public static final int CAPACITANCE_MODE = 7;
+    public static final int DIODE_MODE = 8;
     /*codes for extras of the FREQ RESP packets*/
     public static final String FREQ_RESP_START_FREQ = "FREQ_RESP_START_FREQ";
     public static final String FREQ_RESP_END_FREQ = "FREQ_RESP_END_FREQ";

@@ -45,7 +45,7 @@ public class CapacitanceActivity extends AppCompatActivity {
 
     private int xoffset = 0;
     private float value =0;
-    private boolean currentValueLogged = false;
+    private boolean currentValueLogged = true;
     private String unit = "";
     private String displayString = "";
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -78,7 +78,6 @@ public class CapacitanceActivity extends AppCompatActivity {
                 //displaying value
                 displayString = String.format("Capacitance: %.2f%s",value,unit);
                 valueDisplay_txt.setText(displayString);
-                valueDisplay_txt.invalidate();
             }else{//inside capacitance activity but received wrong packet. send change mode packet
                 Intent change_mode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
                 change_mode.putExtra(MessageCode.MODE,MessageCode.CAPACITANCE_MODE);
@@ -94,6 +93,7 @@ public class CapacitanceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_capacitance);
         getSupportActionBar().setTitle("Capacitance mode");
+        entry_list = new ArrayList<>();
         //obtaining references
         base = (BaseApplication)getApplicationContext();
         logCapacitance_btn = (Button) findViewById(R.id.capacitance_logCapacitance_btn);
@@ -186,17 +186,19 @@ public class CapacitanceActivity extends AppCompatActivity {
 
     //<editor-fold desc="Button onClick methods">
     public void onClickExportData(View view){
-        DialogFragment exportDialog = new DCvoltageActivity.exportDialogFragment();
+        DialogFragment exportDialog = new CapacitanceActivity.exportDialogFragment();
         exportDialog.show(getSupportFragmentManager(),"exportFragmentCapacitance");
     }
 
     public void onClickLogCapacitance(View view){
-        if(currentValueLogged){
+        if(!currentValueLogged){
             Entry e = new Entry(xoffset,value);
             xoffset++;
             entry_list.add(e);
             currentValueLogged=true;
             genChart();
+        }else{
+            base.ts("No new data to log");
         }
     }
     //</editor-fold>
@@ -208,7 +210,7 @@ public class CapacitanceActivity extends AppCompatActivity {
         if (entries.size() > base.getMaxDataPointsToKeep()){
             entries.remove(0);
         }
-        LineDataSet dataSet = new LineDataSet(entries, "Voltage"); // add entries to dataset
+        LineDataSet dataSet = new LineDataSet(entries, "Capacitance"); // add entries to dataset
         dataSet.setColor(ColorTemplate.COLORFUL_COLORS[1]);
         dataSet.setValueTextColor(Color.BLACK);
         LineData lineData = new LineData(dataSet);
