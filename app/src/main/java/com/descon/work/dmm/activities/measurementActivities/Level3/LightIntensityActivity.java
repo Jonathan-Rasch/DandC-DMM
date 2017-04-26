@@ -42,7 +42,7 @@ public class LightIntensityActivity extends AppCompatActivity {
     private boolean currentValueLogged = false;
     private static ArrayList<Entry> entry_list = new ArrayList<>();
     private int xoffset = 0;
-    private static final float MAXIMUM_INTENSITY_VALUE = 3;
+    private static final float MAXIMUM_INTENSITY_VALUE = 20;
     private Speedometer gauge;
     private Button exportDataBtn;
     private Button logIntensityBtn;
@@ -55,8 +55,12 @@ public class LightIntensityActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() == MessageCode.PARSED_LIGHT_INTENSITY) {
                 value = intent.getFloatExtra(MessageCode.VALUE,0f);
+                value += 10;
                 //convert input value to a percentage
                 value = value/MAXIMUM_INTENSITY_VALUE;
+                value *= 100;
+                gauge.setCurrentSpeed((int)value);
+                gauge.invalidate();
                 if (isLogging) {
                     Entry e =new Entry((float)xoffset,value);
                     entry_list.add(e);
@@ -102,6 +106,7 @@ public class LightIntensityActivity extends AppCompatActivity {
         gauge.setMax(100f);
         gauge.setMin(0f);
         gauge.setUnit("%");
+        this.registerReceiver(receiver,base.intentFILTER);
 
     }
 

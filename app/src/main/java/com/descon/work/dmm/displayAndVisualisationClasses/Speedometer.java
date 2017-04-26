@@ -240,7 +240,7 @@ public class Speedometer extends View implements SpeedChangeListener {
         }
         else {
             readingPaint.setColor(Color.BLACK);
-            message = String.format("%.1f%s", this.mCurrentSpeed,this.unit);
+            message = String.format("%.3f%s", this.mCurrentSpeed,this.unit);
         }
         float[] widths = new float[message.length()];
         readingPaint.getTextWidths(message, widths);

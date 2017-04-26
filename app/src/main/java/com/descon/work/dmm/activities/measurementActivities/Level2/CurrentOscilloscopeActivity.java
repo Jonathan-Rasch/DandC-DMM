@@ -57,7 +57,7 @@ public class CurrentOscilloscopeActivity extends AppCompatActivity {
             }else{
                 signalFreq = Float.NaN;
             }
-            String freqString = String.format(" Frequency:%.2f%s",freqUnit,freqUnit);
+            String freqString = String.format(" Frequency:%.2f%s",signalFreq,freqUnit);
             //parsing the range
             if(previousRange != range){
                 //reset the chart

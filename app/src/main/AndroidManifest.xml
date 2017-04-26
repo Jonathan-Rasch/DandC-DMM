@@ -43,7 +43,8 @@
             android:screenOrientation="landscape" />
         <activity android:name=".activities.measurementActivities.Level3.LightIntensityActivity" />
         <activity android:name=".activities.measurementActivities.Level3.CapacitanceActivity" />
-        <activity android:name=".activities.measurementActivities.Level3.DiodeActivity"></activity>
+        <activity android:name=".activities.measurementActivities.Level3.DiodeActivity" />
+        <activity android:name=".activities.measurementActivities.Level2.AcVoltageActivity"></activity>
     </application>
 
 </manifest>

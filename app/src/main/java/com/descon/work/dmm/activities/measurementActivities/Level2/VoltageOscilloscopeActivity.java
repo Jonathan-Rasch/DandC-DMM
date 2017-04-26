@@ -57,7 +57,7 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
             }else{
                 signalFreq = Float.NaN;
             }
-            String freqString = String.format(" Frequency:%.2f%s",freqUnit,freqUnit);
+            String freqString = String.format(" Frequency:%.2f%s",signalFreq,freqUnit);
             //parsing the range
             if(previousRange != range){
                 //reset the chart
@@ -87,7 +87,7 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
                 }
                 previousRange = range;
             }
-            if(frameDetection(value)){
+
                 //create new entry list
                 float pkpk = Math.abs(maximumValue)+Math.abs(minimumValue);
                 peakToPeakText.setText("Voltage(pk-pk):"+pkpk+"V "+freqString);
@@ -97,7 +97,7 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
                     entry_list.add(newEntry);
                 }
                 genChart();
-            }
+
         }
     };
 
@@ -138,77 +138,11 @@ public class VoltageOscilloscopeActivity extends AppCompatActivity {
         });
     }
 
-    private float a;
-    private boolean aValTaken = false;
-    private float b;
-    private boolean frameStarted = false;
+    
     private float maximumValue = 0;
     private float minimumValue = 0;
     private ArrayList<Float> frame = new ArrayList<>();
 
-    /**
-     * obtaines an array of one period of the input signal
-     * @param newValue
-     * @return returns true if frame successfully captured.
-     */
-    private boolean frameDetection(float newValue){
-        /*first part of algorythm is to detect the starting point of the frame*/
-        if(!frameStarted){
-            /*obtaining first and second value for comparison*/
-            if(!aValTaken){
-                a = newValue;
-                /*if a > 0 then already on rising slope and past V=0, disregard and wait for next cycle*/
-                if(a > level){
-                    return false;
-                }
-                aValTaken = true;
-                return false;
-            } else {
-                b = newValue;
-            }
-            /*is current edge rising edge ?*/
-            if (!(b > a)){
-                /*not a rising edge, reset*/
-                aValTaken = false;
-                return false;
-            }
-            /*Now determine the point where the line crosses the V=0 point on the axis*/
-            if((a < level && b == level) || (a < level && b > level)){
-                frame = new ArrayList<>();
-                frame.add(b);
-            }else if (a == level && b > level){
-                frame = new ArrayList<>();
-                frame.add(a);
-                frame.add(b);
-            }else{// V=0 point not crossed
-                a = b;
-                return false;
-            }
-            frameStarted = true;
-            aValTaken = false;
-            maximumValue = 0;
-            minimumValue = 0;
-            return false;
-        }else{
-            //test for new maximum value
-            if(newValue > maximumValue){
-                maximumValue = newValue;
-            }else if(newValue < minimumValue){
-                minimumValue = newValue;
-            }
-            //test if rising slope and crossing V=0, would mean frame is done
-            float prevVal = frame.get(frame.size()-1);
-            if((prevVal < level && newValue == level) || (prevVal < level && newValue > level) || (prevVal == level && newValue > level)){
-                //frame complete !
-                frameStarted = false;
-                frame.add(newValue);
-                return true;
-            } else{// frame not complete
-                frame.add(newValue);
-                return false;
-            }
-        }
-    }
 
     private ArrayList<Entry> entry_list = new ArrayList<>();
     private float level = 0;

@@ -1,4 +1,4 @@
-package com.descon.work.dmm.activities.measurementActivities.Level1;
+package com.descon.work.dmm.activities.measurementActivities.Level2;
 
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -9,19 +9,20 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Switch;
 
-import com.descon.work.dmm.activities.measurementActivities.Level2.CurrentOscilloscopeActivity;
+import com.descon.work.dmm.activities.measurementActivities.Level2.VoltageOscilloscopeActivity;
 import com.descon.work.dmm.utilityClasses.BaseApplication;
 import com.descon.work.dmm.utilityClasses.MessageCode;
 import com.descon.work.dmm.R;
 import com.descon.work.dmm.displayAndVisualisationClasses.Speedometer;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -33,46 +34,46 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
-public class DCcurrentActivity extends AppCompatActivity {
+public class AcVoltageActivity extends AppCompatActivity {
     private static BaseApplication base;
     private static LineChart loggingLineChart;
-    private Button logCurrentButton;
     private Speedometer gauge;
     boolean isLogging = false;
     private int xoffset = 0;
-    private float current =0;
-    private boolean currentCurrentLogged = false;
+    private float voltage=0;
+    private boolean currentVoltageLogged = true;
 
     private static ArrayList<Entry> entry_list = new ArrayList<Entry>();
 
-    private String[] unitsForRanges = {"mA","mA","mA","uA"};
-    private float[] maxValuesForRanges = {1000,100,10,1000};
-    private float[] minValuesForRanges = {-1000,-100,-10,-1000};
+    private String[] unitsForRanges = {"V(RMS)","mV(RMS)","mV(RMS)","mV(RMS)"};
+    private float[] maxValuesForRanges = {10,1000,100,10};
+    private float[] minValuesForRanges = {0,0,0,0};
     private int currentRange = -1;//-1 to ensure range update on first intent
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction() == MessageCode.PARSED_DATA_DC_CURRENT) {
+            if (intent.getAction() == MessageCode.PARSED_AC_VOLTAGE) {
                 parseRange(intent.getIntExtra(MessageCode.RANGE,0));
-                current = intent.getFloatExtra(MessageCode.VALUE,0f);
-                float adjustedCurrent = valueToRangeAdjustment(currentRange, current);
-                rangeBoundaryProximity(adjustedCurrent,minValuesForRanges[currentRange],maxValuesForRanges[currentRange]);
-                gauge.onSpeedChanged(adjustedCurrent);
+                voltage = intent.getFloatExtra(MessageCode.VALUE,0f);
+                float adjustedVoltage = valueToRangeAdjustment(currentRange,voltage);
+                rangeBoundaryProximity(adjustedVoltage,minValuesForRanges[currentRange],maxValuesForRanges[currentRange]);
+                gauge.onSpeedChanged(adjustedVoltage);
                 if (isLogging) {
-                    Entry e =new Entry((float)xoffset, current);
+                    Entry e =new Entry((float)xoffset,voltage);
                     entry_list.add(e);
                     if(entry_list.size()>0){
                         genChart();
                     }
                     xoffset++;
                 }else{
-                    currentCurrentLogged = false;
+                    currentVoltageLogged = false;
                 }
-            }else{//inside current activity but received wrong packet. send change mode packet
+            }else{//inside voltage activity but received wrong packet. send change mode packet
                 Intent change_mode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
-                change_mode.putExtra(MessageCode.MODE,MessageCode.DC_CURRENT_MODE);
+                change_mode.putExtra(MessageCode.MODE,MessageCode.AC_VOLTAGE_MODE);
                 sendBroadcast(change_mode);
             }
         }
@@ -90,6 +91,22 @@ public class DCcurrentActivity extends AppCompatActivity {
         }
     }
 
+    /*converts input voltage (e.g 0.3V) to the current range, so for example 0.3V->300mV*/
+    private float valueToRangeAdjustment(int range, float voltage){
+        //TODO needs to be verified and tested with actual bord
+        switch(range){
+            case 0:
+                return voltage*1;//V
+            case 1:
+                return voltage*1000;//mV
+            case 2:
+                return voltage*1000;//mV
+            case 3:
+                return voltage*1000;//mV
+        }
+        return 0;
+    }
+
     private void rangeBoundaryProximity(float value,float minVal,float maxVal){
         if(value > maxVal || value < minVal){
             base.vibratePulse(500);
@@ -98,79 +115,61 @@ public class DCcurrentActivity extends AppCompatActivity {
         }
     }
 
-    /*converts input current (e.g 0.3A) to the current range, so for example 0.3A->300mA*/
-    private float valueToRangeAdjustment(int range, float current){
-        //TODO needs to be verified and tested with actual bord
-        switch(range){
-            case 0:
-                return current*1E3F;//mA
-            case 1:
-                return current*1E3F;//mA
-            case 2:
-                return current*1E3f;//mA
-            case 3:
-                return current*1E6f;//uA
-        }
-        return 0;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dccurrent);
-        getSupportActionBar().setTitle("Current mode");
+        setContentView(R.layout.activity_ac_voltage);
+        getSupportActionBar().setTitle("AC Voltage mode");
         base = (BaseApplication)getApplicationContext();
-        logCurrentButton = (Button) findViewById(R.id.logCurrent_btn);
-        gauge = (Speedometer) findViewById(R.id.CurrentGauge);
-        gauge.setMax(1000);
-        gauge.setMin(-1000);
+        gauge = (Speedometer) findViewById(R.id.ac_gauge);
+        gauge.setMax(10);
+        gauge.setMin(0);
         gauge.setCurrentSpeed(0);
-        gauge.setUnit("A");
+        gauge.setUnit("V(RMS)");
         /*Registering all message types so that application can send switch mode packet if the
         * wrong packet type is received*/
         registerReceiver(receiver,base.intentFILTER);
 
         //Line Chart
-        loggingLineChart = (LineChart) findViewById(R.id.loggingLineChart_Current);
+        loggingLineChart = (LineChart) findViewById(R.id.ac_loggingLineChart);
         entry_list = new ArrayList<Entry>();
 
         //Data Logging Toggle
-        Switch dataLogTog = (Switch) findViewById(R.id.autoLogCurrent_swt);
+        Switch dataLogTog = (Switch) findViewById(R.id.ac_loggingToggle);
         dataLogTog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggleAutoLogging();
             }
         });
-
     }
 
     private void toggleAutoLogging(){
         isLogging = !isLogging;
     }
 
-    public void logCurrent(View view){
-        if (!currentCurrentLogged) {
-            Entry e =new Entry((float)xoffset, current);
+    public void logVoltage(View view){
+        if (!currentVoltageLogged) {
+            Entry e =new Entry((float)xoffset,voltage);
             entry_list.add(e);
             if(entry_list.size()>0){
                 genChart();
             }
             xoffset++;
-            currentCurrentLogged = true;
+            currentVoltageLogged = true;
         }else{
             base.ts("No new data packages");
         }
     }
 
     public void onClickOscilloscopeMode(View view){
-        Intent start_oscilloscope_activity_intent = new Intent(this,CurrentOscilloscopeActivity.class);
+        Intent start_oscilloscope_activity_intent = new Intent(this,VoltageOscilloscopeActivity.class);
         startActivity(start_oscilloscope_activity_intent);
     }
 
     public void onClickExportData(View view){
-        DialogFragment exportDialog = new DCcurrentActivity.exportDialogFragment();
-        exportDialog.show(getSupportFragmentManager(),"exportFragmentDcCurrent");
+        DialogFragment exportDialog = new AcVoltageActivity.exportDialogFragment();
+        exportDialog.show(getSupportFragmentManager(),"exportFragmentAcVoltage");
     }
 
     public void onClickClearLog(View view){
@@ -187,11 +186,14 @@ public class DCcurrentActivity extends AppCompatActivity {
         if (entries.size() > base.getMaxDataPointsToKeep()){
             entries.remove(0);
         }
-        LineDataSet dataSet = new LineDataSet(entries, "Current"); // add entries to dataset
+        LineDataSet dataSet = new LineDataSet(entries, "Voltage(RMS)"); // add entries to dataset
         dataSet.setColor(ColorTemplate.COLORFUL_COLORS[1]);
         dataSet.setValueTextColor(Color.BLACK);
         LineData lineData = new LineData(dataSet);
         loggingLineChart.clear();
+        Description desc = new Description();
+        desc.setText("X: measurement number Y: Voltage(RMS)");
+        loggingLineChart.setDescription(desc);
         loggingLineChart.setData(lineData);
         loggingLineChart.invalidate(); // refresh
         loggingLineChart.notifyDataSetChanged();//Causes redraw when we add data. I imagine we'll initiate
@@ -236,7 +238,7 @@ public class DCcurrentActivity extends AppCompatActivity {
             dir.mkdirs();
         }
         String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-        File file   =   new File(dir, "CurrentLog_"+currentDateTimeString+".txt");
+        File file   =   new File(dir, "AcVoltageLog_"+currentDateTimeString+".txt");
         StringBuilder dataString = new StringBuilder("");
         ArrayList<Entry> copyList = new ArrayList<>(entry_list);
         for(int i=0;i<copyList.size();i++){
@@ -252,7 +254,7 @@ public class DCcurrentActivity extends AppCompatActivity {
                 // try to send file via email
                 Uri fileLocation  =   Uri.fromFile(file);
                 Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "DMM Current data");
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "DMM Voltage data");
                 sendIntent.putExtra(Intent.EXTRA_STREAM, fileLocation);
                 sendIntent.setType("text/html");
                 sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -270,7 +272,7 @@ public class DCcurrentActivity extends AppCompatActivity {
             return;
         }
         String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-        String imageName =   "CurrentGraphImage_"+currentDateTimeString;
+        String imageName =   "AcVoltageGraphImage_"+currentDateTimeString;
         loggingLineChart.saveToGallery(imageName,100);
         base.ts("Image saved to Gallery as: "+imageName);
     }

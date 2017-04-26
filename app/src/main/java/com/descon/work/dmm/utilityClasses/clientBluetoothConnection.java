@@ -54,6 +54,7 @@ public class clientBluetoothConnection extends Thread implements Serializable{
 // Establishing connection, and listening for incoming data [this will run in created thread]
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     public void run(){
+        Log.d(TAG,"CONNECTION THREAD STARTED");
         //stopping bluetooth discovery
         bluetoothAdapter.cancelDiscovery();
         try {

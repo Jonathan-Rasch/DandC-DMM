@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.descon.work.dmm.activities.measurementActivities.Level1.DCcurrentActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level1.ResistanceActivity;
+import com.descon.work.dmm.activities.measurementActivities.Level2.AcVoltageActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level3.CapacitanceActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level3.DiodeActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level3.LightIntensityActivity;
@@ -47,15 +48,15 @@ public class ConnectionScreenActivity extends AppCompatActivity
                 displayReceivedPacket(message);
             }else if(MessageCode.PARSED_DATA_RESISTANCE.equals(intent.getAction())){
                 String message = "[Resistance] value:"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f)+
-                " range:"+String.valueOf(intent.getFloatExtra(MessageCode.RANGE,0f)));
+                " range:"+String.valueOf(intent.getIntExtra(MessageCode.RANGE,0)));
                 displayReceivedPacket(message);
             }else if(MessageCode.PARSED_DATA_FREQ_RESP.equals(intent.getAction())){
                 String message = "[FreqResp] Vout/Vin:"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f)+
-                        " @frequency:"+String.valueOf(intent.getFloatExtra(MessageCode.RANGE,0f)));
+                        " @frequency:"+String.valueOf(intent.getIntExtra(MessageCode.RANGE,0)));
                 displayReceivedPacket(message);
             }else if(MessageCode.SIGGEN_ACK.equals(intent.getAction())){
                 String message = "[SigGen] amplitude:"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f)+
-                        " @frequency:"+String.valueOf(intent.getFloatExtra(MessageCode.RANGE,0f)));
+                        " @frequency:"+String.valueOf(intent.getIntExtra(MessageCode.RANGE,0)));
                 displayReceivedPacket(message);
             }else if(MessageCode.PARSED_CAPACITANCE.equals(intent.getAction())){
                 String message = "[Capacitance] value:"+String.valueOf(intent.getFloatExtra(MessageCode.VALUE,0f));
@@ -166,6 +167,9 @@ public class ConnectionScreenActivity extends AppCompatActivity
         } else if (id == R.id.nav_freqResp) {
             Intent startFreqRespActivity = new Intent(this,FrequencyResponseActivity.class);
             startActivity(startFreqRespActivity);
+        }else if (id == R.id.nav_AC_Voltage) {
+            Intent startAcVoltageActivity = new Intent(this,AcVoltageActivity.class);
+            startActivity(startAcVoltageActivity);
         }else if (id == R.id.nav_SigGen) {
             Intent startSigGenActivity = new Intent(this,SignalGeneratorActivity.class);
             startActivity(startSigGenActivity);
@@ -191,9 +195,15 @@ public class ConnectionScreenActivity extends AppCompatActivity
     }
 
     private boolean consolEnabled = false;
-    public void onClick_displayConsolSwitch(View view){
-        consolEnabled = ((Switch)view).isChecked();
+    public void onClick_displayConsolSwitch(View view) {
+        consolEnabled = ((Switch) view).isChecked();
     }
 
+    @Override
+    protected void onDestroy() {
+        //preventing receiver leaking
+        this.unregisterReceiver(this.receiver);
+        super.onDestroy();
+    }
 
 }

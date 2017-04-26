@@ -70,7 +70,7 @@ public class ResistanceActivity extends AppCompatActivity {
                 }
             }else{//inside resistance activity but received wrong packet. send change mode packet
                 Intent change_mode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
-                change_mode.putExtra(MessageCode.MODE,MessageCode.DC_VOLTAGE_MODE);
+                change_mode.putExtra(MessageCode.MODE,MessageCode.RESISTANCE_MODE);
                 sendBroadcast(change_mode);
             }
         }

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_dcvoltage"
+    android:id="@+id/activity_AcVoltage"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.measurementActivities.Level1.DCvoltageActivity">
@@ -10,12 +10,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/gaugeLayout"
+        android:id="@+id/ac_gaugeLayout"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
 
         <com.descon.work.dmm.displayAndVisualisationClasses.Speedometer
-            android:id="@+id/gauge"
+            android:id="@+id/ac_gauge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             custom:currentSpeed="3"
@@ -26,7 +26,7 @@
 
 
     <Button
-        android:id="@+id/btn_ClearLog"
+        android:id="@+id/ac_btn_ClearLog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -35,8 +35,8 @@
         android:text="Clear Log" />
 
     <Button
-        android:id="@+id/button9"
-        android:layout_width="match_parent"
+        android:id="@+id/ac_button9"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onClickExportData"
         android:text="Export Data"
@@ -44,16 +44,17 @@
         android:layout_alignParentEnd="true" />
 
 
+
     <Button
-        android:id="@+id/button7"
+        android:id="@+id/ac_button7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:onClick="logVoltage"
-        android:text="Log Voltage" />
+        android:text="RMS Voltage" />
 
     <Switch
-        android:id="@+id/loggingToggle"
+        android:id="@+id/ac_loggingToggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/btn_ClearLog"
@@ -65,7 +66,17 @@
         android:layout_marginTop="220dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/loggingLineChart"
-        android:layout_above="@+id/button9" />
+        android:id="@+id/ac_loggingLineChart"
+        android:layout_above="@+id/ac_button9" />
+
+    <TextView
+        android:id="@+id/ac_freq_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/ac_loggingLineChart"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:text="Frequency: NAN" />
 
 </RelativeLayout>

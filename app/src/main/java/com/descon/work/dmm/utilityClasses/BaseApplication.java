@@ -11,6 +11,8 @@ import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.descon.work.dmm.activities.MainActivity;
+
 /**
  * Created by Work on 13/02/2017.
  */
@@ -49,6 +51,10 @@ public class BaseApplication extends Application {
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            if(connection == null  || !connection.isConnectionActive()){
+                drop_connection();
+               // Intent startMainActivityIntent = new Intent(this, MainActivity.class)
+            }
             String action = intent.getAction();
             if (action != null) {
                 switch (action){
@@ -81,7 +87,7 @@ public class BaseApplication extends Application {
                                 Log.e(TAG,"Error when parsing the frequency response packet");
                                 return;
                             }
-                            String message = "<m:"+String.valueOf(mode)+";start:"+startFreqKhz+";end:"+endFreqKhz+";steps:"+numberOfSteps+">";
+                            String message = "<m: "+String.valueOf(mode)+" ;start: "+startFreqKhz+" ;end: "+endFreqKhz+" ;steps: "+numberOfSteps+" >";
                             connection.write(message.getBytes());
                             Log.d("wrote:",message);
                         }else if(mode == MessageCode.SIG_GEN_MODE){//mode change request for SigGen contains extra data
@@ -92,7 +98,7 @@ public class BaseApplication extends Application {
                                 Log.e(TAG,"Invalid signal generator parameters. Sending aborted");
                                 return;
                             }
-                            String message = "<m:"+mode+";freq:"+signalFrequency+";ampl:"+signalAmplitude+";type:"+wavetype+">";
+                            String message = "<m: "+mode+" ;freq: "+signalFrequency+" ;ampl: "+signalAmplitude+" ;type: "+wavetype+" >";
                             connection.write(message.getBytes());
                             Log.d("wrote:",message);
                         }
@@ -151,7 +157,7 @@ public class BaseApplication extends Application {
     private boolean connection_in_Progress = false;
     public void start_connection(BluetoothDevice device){
         this.drop_connection();
-        if (blueAdapter != null && blueAdapter.isEnabled() && !connection_in_Progress) {
+        if (blueAdapter != null && blueAdapter.isEnabled() && !this.get_connection_in_Progress()) {
             connection_in_Progress = true;
             connection = new clientBluetoothConnection(device,blueAdapter,getApplicationContext());
             connection.start();
@@ -162,6 +168,8 @@ public class BaseApplication extends Application {
         if (connection != null && connection.isConnectionActive()){
             t("Dropping connection...");
             connection.close_connection();
+            connection_in_Progress=false;
+
         }
     }
 
@@ -170,6 +178,7 @@ public class BaseApplication extends Application {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     private void parse_read_data(byte[] buffer) {
         if (buffer != null) {
+
             String current_message = new String(buffer);
             if (validate_message(current_message)){
                 parse_and_send(current_message);
@@ -331,21 +340,26 @@ public class BaseApplication extends Application {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public String getConnectedDeviceName(){
-        if (getConnection_active()){
+        if (true){
             return connection.getBluetoothDevice().getName();
         }
         return "";
     }
 
     public String getConnectedDeviceAddress(){
-        if (getConnection_active()){
+        if (true){
             return connection.getBluetoothDevice().getAddress();
         }
         return "";
     }
 
     public boolean get_connection_in_Progress(){
-        return connection_in_Progress;
+        if(connection != null){
+            return connection.isConnectionActive();
+        }else{
+            return false;
+        }
+
     }
 
     public void t(String text){

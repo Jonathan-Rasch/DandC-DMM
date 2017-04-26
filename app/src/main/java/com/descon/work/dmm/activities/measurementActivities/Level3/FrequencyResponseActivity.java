@@ -46,12 +46,23 @@ public class FrequencyResponseActivity extends AppCompatActivity {
                 * r: the frequency at which the value is taken (in Hz)*/
             if(intentAction == MessageCode.PARSED_DATA_FREQ_RESP){
                 float gain = intent.getFloatExtra(MessageCode.VALUE,0f);
+                gain = (float)Math.log10(gain);
                 int frequency = intent.getIntExtra(MessageCode.RANGE,0);//freq in Hz
+                if(frequency == 0 ){
+                    logchart.clear();
+                    entry_list = new ArrayList<>();
+                    return;
+                }else if (frequency == base.getFreqRespEndFreqHz()){
+                    Intent change_mode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
+                    change_mode.putExtra(MessageCode.MODE,MessageCode.DC_VOLTAGE_MODE);
+                    sendBroadcast(change_mode);
+                    started = false;
+                }
                 //creating Entry for log linear plot
                 Entry e = new Entry((float)Math.log10(frequency),gain);
                 entry_list.add(e);
                 updateChart();
-            }else{// send change mode packet since the received packet is wrong
+            }else if(started){// send change mode packet since the received packet is wrong
                 Intent change_mode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
                 change_mode.putExtra(MessageCode.MODE,MessageCode.FREQ_RESP_MODE);
                 change_mode.putExtra(MessageCode.FREQ_RESP_START_FREQ,base.getFreqRespStartFreqHz());
@@ -159,7 +170,7 @@ public class FrequencyResponseActivity extends AppCompatActivity {
         }
     }
 
-
+    private boolean started = false;
     public void onClickBeginDataAquisition(View view){
         /*Sending message to DMM to tell it to start the freq response, the format is:
         * <m:int;start:int;end:int;steps:int>
@@ -168,6 +179,7 @@ public class FrequencyResponseActivity extends AppCompatActivity {
         *   end: end frequency in Hz
         *   steps: number of steps to take to reach the end frequency */
         clearChart();
+        started = true;
         Intent change_mode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
         change_mode.putExtra(MessageCode.MODE,MessageCode.FREQ_RESP_MODE);
         change_mode.putExtra(MessageCode.FREQ_RESP_START_FREQ,base.getFreqRespStartFreqHz());
