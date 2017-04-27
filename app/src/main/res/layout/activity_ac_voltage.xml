@@ -57,8 +57,8 @@
         android:id="@+id/ac_loggingToggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/btn_ClearLog"
-        android:layout_alignBottom="@+id/btn_ClearLog"
+        android:layout_alignBaseline="@+id/ac_btn_ClearLog"
+        android:layout_alignBottom="@+id/ac_btn_ClearLog"
         android:layout_alignParentEnd="true"
         android:text="Auto Logging" />
 

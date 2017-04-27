@@ -129,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
         tv_bluetoothStatus = (TextView) findViewById(R.id.tv_bluetoothStatus);
         btn_connect = (Button) findViewById(R.id.btn_connect);
         tv_discovered_devices = (TextView)findViewById(R.id.tv_discovered_devices);
-        btn_DEBUG_CONNECT = (Button) findViewById(R.id.DEBUG_CONNECT);
         //broadcast receiver setup
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
@@ -197,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
     public void onClick_connect(View view){
         btn_connect.setEnabled(false);//disable button whilst trying to setup the bluetooth
         setupBluetooth();
-
     }
 
     public void onClick_DEBUG_CONNECT(View view){

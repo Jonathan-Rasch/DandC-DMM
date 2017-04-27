@@ -9,14 +9,12 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Switch;
 
-import com.descon.work.dmm.activities.measurementActivities.Level2.VoltageOscilloscopeActivity;
 import com.descon.work.dmm.utilityClasses.BaseApplication;
 import com.descon.work.dmm.utilityClasses.MessageCode;
 import com.descon.work.dmm.R;
@@ -34,7 +32,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 public class DCvoltageActivity extends AppCompatActivity {
     private static BaseApplication base;
@@ -142,6 +139,10 @@ public class DCvoltageActivity extends AppCompatActivity {
                 toggleAutoLogging();
             }
         });
+        //sending a mode change request
+        Intent change_mode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
+        change_mode.putExtra(MessageCode.MODE,MessageCode.DC_VOLTAGE_MODE);
+        sendBroadcast(change_mode);
     }
 
     private void toggleAutoLogging(){
@@ -160,11 +161,6 @@ public class DCvoltageActivity extends AppCompatActivity {
         }else{
             base.ts("No new data packages");
         }
-    }
-
-    public void onClickOscilloscopeMode(View view){
-        Intent start_oscilloscope_activity_intent = new Intent(this,VoltageOscilloscopeActivity.class);
-        startActivity(start_oscilloscope_activity_intent);
     }
 
     public void onClickExportData(View view){

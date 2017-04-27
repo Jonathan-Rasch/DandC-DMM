@@ -44,8 +44,8 @@ public class ResistanceActivity extends AppCompatActivity {
 
     private static ArrayList<Entry> entry_list = new ArrayList<Entry>();
 
-    private String[] unitsForRanges = {"Ω","kΩ","kΩ","MΩ"};
-    private float[] maxValuesForRanges = {1000,10,100,1};
+    private String[] unitsForRanges = {"Ω","kΩ","kΩ","kΩ"};
+    private float[] maxValuesForRanges = {1000,10,100,1000};
     private float[] minValuesForRanges = {0,0,0,0};
     private int currentRange = -1;//-1 to ensure range update on first intent
 
@@ -53,9 +53,8 @@ public class ResistanceActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() == MessageCode.PARSED_DATA_RESISTANCE) {
-                parseRange(intent.getIntExtra(MessageCode.RANGE,0));
                 resistance = intent.getFloatExtra(MessageCode.VALUE,0f);
-                float adjustedResistance = valueToRangeAdjustment(currentRange, resistance);
+                float adjustedResistance = valueToRangeAdjustment(resistance);
                 rangeBoundaryProximity(adjustedResistance,minValuesForRanges[currentRange],maxValuesForRanges[currentRange]);
                 gauge.onSpeedChanged(adjustedResistance);
                 if (isLogging) {
@@ -84,6 +83,7 @@ public class ResistanceActivity extends AppCompatActivity {
         }
     }
 
+    //TODO remove
     /*take the range value and set the correct units for display in gauge*/
     private void parseRange(int range){
         //check if the range has changed
@@ -97,19 +97,33 @@ public class ResistanceActivity extends AppCompatActivity {
     }
 
     /*converts input resistance (e.g 0.3V) to the current range, so for example 0.3V->300mV*/
-    private float valueToRangeAdjustment(int range, float resistance){
-        //TODO needs to be verified and tested with actual bord
-        switch(range){
-            case 0:
-                return resistance*1;//ohms
-            case 1:
-                return resistance/1000;//kOhms
-            case 2:
-                return resistance/1000;//kOhms
-            case 3:
-                return resistance/1000000;//MOhms
+    private float valueToRangeAdjustment(float resistance){
+        currentRange = 0;
+        //preventing extremes
+        if(resistance<0){
+            resistance = 0;
+        }else if(resistance > 1E6){
+            resistance = 1E6f;
         }
-        return 0;
+
+        //gauge limits and units
+        gauge.setMin(0);// min is always 0
+        if(resistance<1E3){
+            resistance /= 1;
+        }else if(resistance >= 1E3 && resistance < 1E4){
+            currentRange = 1;
+            resistance /= 1000;
+        }else if(resistance >= 1E4 && resistance < 1E5){
+            currentRange = 2;
+            resistance /= 1000;
+        }else if(resistance >= 1E5 && resistance <= 1E6){
+            currentRange = 3;
+            resistance /= 1000;
+        }
+        gauge.setUnit(unitsForRanges[currentRange]);
+        gauge.setMin(minValuesForRanges[currentRange]);
+        gauge.setMax(maxValuesForRanges[currentRange]);
+        return resistance;
     }
 
     @Override

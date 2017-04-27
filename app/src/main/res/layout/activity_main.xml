@@ -51,13 +51,11 @@
 
     <Button
         android:text="Connect"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btn_connect"
         android:onClick="onClick_connect"
-        android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/textView4"
-        android:layout_marginEnd="15dp" />
+        android:layout_alignParentBottom="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -65,14 +63,5 @@
         android:layout_below="@+id/textView4"
         android:layout_centerHorizontal="true"
         android:id="@+id/tv_discovered_devices" />
-
-    <Button
-        android:id="@+id/DEBUG_CONNECT"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@+id/tv_bluetoothStatus"
-        android:text="DEBUG_CONNECT"
-        android:onClick="onClick_DEBUG_CONNECT"/>
 
 </RelativeLayout>

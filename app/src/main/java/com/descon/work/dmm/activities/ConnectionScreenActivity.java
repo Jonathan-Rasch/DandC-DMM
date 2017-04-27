@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.descon.work.dmm.activities.measurementActivities.Level1.DCcurrentActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level1.ResistanceActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level2.AcVoltageActivity;
+import com.descon.work.dmm.activities.measurementActivities.Level2.ContinuityActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level3.CapacitanceActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level3.DiodeActivity;
 import com.descon.work.dmm.activities.measurementActivities.Level3.LightIntensityActivity;
@@ -173,6 +174,9 @@ public class ConnectionScreenActivity extends AppCompatActivity
         }else if (id == R.id.nav_SigGen) {
             Intent startSigGenActivity = new Intent(this,SignalGeneratorActivity.class);
             startActivity(startSigGenActivity);
+        }else if (id == R.id.nav_continuity) {
+            Intent startContinuityActivity = new Intent(this,ContinuityActivity.class);
+            startActivity(startContinuityActivity);
         }else if (id == R.id.nav_LightIntensity) {
             Intent startLightIntensityActivity = new Intent(this,LightIntensityActivity.class);
             startActivity(startLightIntensityActivity);
@@ -194,16 +198,9 @@ public class ConnectionScreenActivity extends AppCompatActivity
         return true;
     }
 
-    private boolean consolEnabled = false;
+    private boolean consolEnabled = true;
     public void onClick_displayConsolSwitch(View view) {
         consolEnabled = ((Switch) view).isChecked();
-    }
-
-    @Override
-    protected void onDestroy() {
-        //preventing receiver leaking
-        this.unregisterReceiver(this.receiver);
-        super.onDestroy();
     }
 
 }

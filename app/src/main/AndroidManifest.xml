@@ -31,20 +31,15 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity
-            android:name=".activities.measurementActivities.Level2.VoltageOscilloscopeActivity"
-            android:screenOrientation="landscape" />
         <activity android:name=".activities.measurementActivities.Level3.FrequencyResponseActivity" />
         <activity android:name=".activities.measurementActivities.Level1.DCcurrentActivity" />
         <activity android:name=".activities.measurementActivities.Level3.SignalGeneratorActivity" />
         <activity android:name=".activities.measurementActivities.Level1.ResistanceActivity" />
-        <activity
-            android:name=".activities.measurementActivities.Level2.CurrentOscilloscopeActivity"
-            android:screenOrientation="landscape" />
         <activity android:name=".activities.measurementActivities.Level3.LightIntensityActivity" />
         <activity android:name=".activities.measurementActivities.Level3.CapacitanceActivity" />
         <activity android:name=".activities.measurementActivities.Level3.DiodeActivity" />
-        <activity android:name=".activities.measurementActivities.Level2.AcVoltageActivity"></activity>
+        <activity android:name=".activities.measurementActivities.Level2.AcVoltageActivity" />
+        <activity android:name=".activities.measurementActivities.Level2.ContinuityActivity"></activity>
     </application>
 
 </manifest>

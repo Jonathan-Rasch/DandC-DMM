@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.descon.work.dmm.activities.measurementActivities.Level2.ContinuityActivity">
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Continuity mode selected, use probes to probe circuit and listen for auido feedback indicating continuity."
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="239dp" />
+</android.support.constraint.ConstraintLayout>

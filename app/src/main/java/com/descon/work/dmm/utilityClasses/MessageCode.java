@@ -25,10 +25,11 @@ public abstract class MessageCode {
     public static final int RESISTANCE_MODE = 3;
     public static final int FREQ_RESP_MODE = 4;
     public static final int SIG_GEN_MODE = 5;
-    public static final int LIGHT_INTENSITY_MODE = 9;
+    public static final int AC_VOLTAGE_MODE = 6;
     public static final int CAPACITANCE_MODE = 7;
     public static final int DIODE_MODE = 8;
-    public static final int AC_VOLTAGE_MODE = 6;
+    public static final int LIGHT_INTENSITY_MODE = 9;
+    public static final int CONTINUITY_MODE = 10;
     /*codes for extras of the FREQ RESP packets*/
     public static final String FREQ_RESP_START_FREQ = "FREQ_RESP_START_FREQ";
     public static final String FREQ_RESP_END_FREQ = "FREQ_RESP_END_FREQ";

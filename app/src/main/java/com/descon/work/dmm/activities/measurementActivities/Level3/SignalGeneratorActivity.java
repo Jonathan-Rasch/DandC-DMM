@@ -30,10 +30,10 @@ import java.util.Random;
 
 public class SignalGeneratorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "SigGen";
-    private static final int MINIMUM_FREQUENCY = 100;
-    private static final int MAXIMUM_FREQUENCY = 3000000;
-    private static final float MINIMUM_AMPLITUDE = 0.000001f;
-    private static final float MAXIMUM_AMPLITUDE = 10f;
+    private static final int MINIMUM_FREQUENCY = 15;
+    private static final int MAXIMUM_FREQUENCY = 45000;
+    private static final float MINIMUM_AMPLITUDE = 1.0f;
+    private static final float MAXIMUM_AMPLITUDE = 3.3f;
     BaseApplication base;
     //views
     private Spinner waveformSelector;
@@ -57,15 +57,16 @@ public class SignalGeneratorActivity extends AppCompatActivity implements Adapte
                 int tfrequency = intent.getIntExtra(MessageCode.RANGE,-1);
                 if(amplitude==sigAmplitude && frequency == tfrequency){
                     return;//packet data correct
+                }else{
+                    //if program got to this point then some data in packet is not ok
+                    Intent sigGenMode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
+                    sigGenMode.putExtra(MessageCode.MODE,MessageCode.SIG_GEN_MODE);
+                    sigGenMode.putExtra(MessageCode.SIGGEN_FREQ,frequency);
+                    sigGenMode.putExtra(MessageCode.SIGGEN_AMPL,sigAmplitude);
+                    sigGenMode.putExtra(MessageCode.SIGGEN_SIGTYPE,sigType);
+                    base.sendBroadcast(sigGenMode);
                 }
             }
-            //if program got to this point then some data in packet is not ok
-            Intent sigGenMode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
-            sigGenMode.putExtra(MessageCode.MODE,MessageCode.SIG_GEN_MODE);
-            sigGenMode.putExtra(MessageCode.SIGGEN_FREQ,frequency);
-            sigGenMode.putExtra(MessageCode.SIGGEN_AMPL,sigAmplitude);
-            sigGenMode.putExtra(MessageCode.SIGGEN_SIGTYPE,sigType);
-            base.sendBroadcast(sigGenMode);
         }
     };
 
@@ -176,8 +177,8 @@ public class SignalGeneratorActivity extends AppCompatActivity implements Adapte
 
     //packet fields
     private String sigType = "";
-    private float sigAmplitude = 1;
-    private int frequency = 100000;
+    private float sigAmplitude = 1.5f;
+    private int frequency = 5000;
     private void resetFields(){
         if(frequency < 1000){
             editText_frequency.setText(String.valueOf(frequency));
@@ -323,7 +324,7 @@ public class SignalGeneratorActivity extends AppCompatActivity implements Adapte
         }
         newPeriod *= periodMultiplier;
         float newFrequency = ((float)1)/newPeriod;
-        if(newFrequency > MINIMUM_FREQUENCY && newFrequency < MAXIMUM_FREQUENCY){
+        if(newFrequency >= MINIMUM_FREQUENCY && newFrequency <= MAXIMUM_FREQUENCY){
             frequency = (int)newFrequency;
             editText_frequency.setBackground(new ColorDrawable(Color.WHITE));
             editText_period.setBackground(new ColorDrawable(Color.WHITE));
@@ -349,7 +350,7 @@ public class SignalGeneratorActivity extends AppCompatActivity implements Adapte
             return;
         }
         newFrequency *= frequencyMultiplier;
-        if(newFrequency > MINIMUM_FREQUENCY && newFrequency < MAXIMUM_FREQUENCY){
+        if(newFrequency >= MINIMUM_FREQUENCY && newFrequency <= MAXIMUM_FREQUENCY){
             frequency = (int)newFrequency;
             editText_frequency.setBackground(new ColorDrawable(Color.WHITE));
             base.ts("Frequency set!");
@@ -393,6 +394,7 @@ public class SignalGeneratorActivity extends AppCompatActivity implements Adapte
             base.ts("Some fields have changed values and have not been set. Aborting");
             return;
         }
+        //now send actual packet with the information
         Intent sigGenMode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
         sigGenMode.putExtra(MessageCode.MODE,MessageCode.SIG_GEN_MODE);
         sigGenMode.putExtra(MessageCode.SIGGEN_FREQ,frequency);

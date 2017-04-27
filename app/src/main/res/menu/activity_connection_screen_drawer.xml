@@ -12,10 +12,6 @@
                 android:icon="@drawable/ic_menu_slideshow"
                 android:title="DC Voltage" />
             <item
-                android:id="@+id/nav_AC_Voltage"
-                android:icon="@drawable/ic_menu_slideshow"
-                android:title="AC Voltage" />
-            <item
                 android:id="@+id/nav_Current"
                 android:icon="@drawable/ic_menu_slideshow"
                 android:title="Current" />
@@ -23,6 +19,14 @@
                 android:id="@+id/nav_Resistance"
                 android:icon="@drawable/ic_menu_slideshow"
                 android:title="Resistance" />
+            <item
+                android:id="@+id/nav_continuity"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="Continuity" />
+            <item
+                android:id="@+id/nav_AC_Voltage"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="AC Voltage" />
             <item
                 android:id="@+id/nav_capacitance"
                 android:icon="@drawable/ic_menu_slideshow"
@@ -49,10 +53,6 @@
     <group
         android:id="@+id/menu_bottom"
         android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_calibrate"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Calibrate DMM" />
         <item
             android:id="@+id/nav_disconnect"
             android:icon="@drawable/ic_menu_manage"

@@ -9,14 +9,13 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Switch;
+import android.widget.TextView;
 
-import com.descon.work.dmm.activities.measurementActivities.Level2.VoltageOscilloscopeActivity;
 import com.descon.work.dmm.utilityClasses.BaseApplication;
 import com.descon.work.dmm.utilityClasses.MessageCode;
 import com.descon.work.dmm.R;
@@ -34,7 +33,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 public class AcVoltageActivity extends AppCompatActivity {
     private static BaseApplication base;
@@ -51,6 +49,8 @@ public class AcVoltageActivity extends AppCompatActivity {
     private float[] maxValuesForRanges = {10,1000,100,10};
     private float[] minValuesForRanges = {0,0,0,0};
     private int currentRange = -1;//-1 to ensure range update on first intent
+    private float maxVoltage = 10f;
+    private float signalFreq= Float.NaN;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -59,6 +59,23 @@ public class AcVoltageActivity extends AppCompatActivity {
                 parseRange(intent.getIntExtra(MessageCode.RANGE,0));
                 voltage = intent.getFloatExtra(MessageCode.VALUE,0f);
                 float adjustedVoltage = valueToRangeAdjustment(currentRange,voltage);
+                int freqInHz = intent.getIntExtra(MessageCode.EXTRA,-1);
+                String freqUnit= "";
+                //parsing frequency
+                if(freqInHz <= 1000){
+                    signalFreq = ((float)freqInHz);//Hz
+                    freqUnit = "Hz";
+                }else if (freqInHz > 1E3 && freqInHz <= 1E6){
+                    signalFreq = (float) (((float)freqInHz)/1E3);//kHz
+                    freqUnit = "kHz";
+                }else if (freqInHz > 1E6 && freqInHz <= 1E9){
+                    signalFreq = (float) (((float)freqInHz)/1E6);//MHz
+                    freqUnit = "MHz";
+                }else{
+                    signalFreq = Float.NaN;
+                }
+                String freqString = String.format(" Frequency:%.2f%s",signalFreq,freqUnit);
+                frequency_text.setText(freqString);
                 rangeBoundaryProximity(adjustedVoltage,minValuesForRanges[currentRange],maxValuesForRanges[currentRange]);
                 gauge.onSpeedChanged(adjustedVoltage);
                 if (isLogging) {
@@ -75,6 +92,7 @@ public class AcVoltageActivity extends AppCompatActivity {
                 Intent change_mode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
                 change_mode.putExtra(MessageCode.MODE,MessageCode.AC_VOLTAGE_MODE);
                 sendBroadcast(change_mode);
+                frequency_text.setText("DMM in incorrect mode...");
             }
         }
     };
@@ -93,7 +111,9 @@ public class AcVoltageActivity extends AppCompatActivity {
 
     /*converts input voltage (e.g 0.3V) to the current range, so for example 0.3V->300mV*/
     private float valueToRangeAdjustment(int range, float voltage){
-        //TODO needs to be verified and tested with actual bord
+        if(voltage<0){
+            voltage=0;
+        }
         switch(range){
             case 0:
                 return voltage*1;//V
@@ -115,6 +135,7 @@ public class AcVoltageActivity extends AppCompatActivity {
         }
     }
 
+    protected TextView frequency_text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,6 +153,7 @@ public class AcVoltageActivity extends AppCompatActivity {
 
         //Line Chart
         loggingLineChart = (LineChart) findViewById(R.id.ac_loggingLineChart);
+        frequency_text = (TextView) findViewById(R.id.ac_freq_text);
         entry_list = new ArrayList<Entry>();
 
         //Data Logging Toggle
@@ -142,6 +164,10 @@ public class AcVoltageActivity extends AppCompatActivity {
                 toggleAutoLogging();
             }
         });
+        //asking dmm to change to Ac mode
+        Intent change_mode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
+        change_mode.putExtra(MessageCode.MODE,MessageCode.AC_VOLTAGE_MODE);
+        sendBroadcast(change_mode);
     }
 
     private void toggleAutoLogging(){
@@ -160,11 +186,6 @@ public class AcVoltageActivity extends AppCompatActivity {
         }else{
             base.ts("No new data packages");
         }
-    }
-
-    public void onClickOscilloscopeMode(View view){
-        Intent start_oscilloscope_activity_intent = new Intent(this,VoltageOscilloscopeActivity.class);
-        startActivity(start_oscilloscope_activity_intent);
     }
 
     public void onClickExportData(View view){
