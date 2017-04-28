@@ -83,19 +83,6 @@ public class ResistanceActivity extends AppCompatActivity {
         }
     }
 
-    //TODO remove
-    /*take the range value and set the correct units for display in gauge*/
-    private void parseRange(int range){
-        //check if the range has changed
-        if(currentRange != range){
-            //assigning new gauge values and units
-            gauge.setMin(minValuesForRanges[range]);
-            gauge.setMax(maxValuesForRanges[range]);
-            gauge.setUnit(unitsForRanges[range]);
-            currentRange = range;
-        }
-    }
-
     /*converts input resistance (e.g 0.3V) to the current range, so for example 0.3V->300mV*/
     private float valueToRangeAdjustment(float resistance){
         currentRange = 0;
@@ -133,7 +120,7 @@ public class ResistanceActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Resistance mode");
         base = (BaseApplication)getApplicationContext();
         gauge = (Speedometer) findViewById(R.id.ResistanceGauge);
-        gauge.setMax(10);
+        gauge.setMax(1000);
         gauge.setMin(0);
         gauge.setCurrentSpeed(0);
         gauge.setUnit("Ω");
@@ -153,7 +140,10 @@ public class ResistanceActivity extends AppCompatActivity {
                 toggleAutoLogging();
             }
         });
-
+        //ask DMM to switch to resistance mode
+        Intent change_mode = new Intent(MessageCode.DMM_CHANGE_MODE_REQUEST);
+        change_mode.putExtra(MessageCode.MODE,MessageCode.RESISTANCE_MODE);
+        sendBroadcast(change_mode);
     }
 
     private void toggleAutoLogging(){

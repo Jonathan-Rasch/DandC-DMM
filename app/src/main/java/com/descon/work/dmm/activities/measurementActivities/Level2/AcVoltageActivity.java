@@ -130,7 +130,7 @@ public class AcVoltageActivity extends AppCompatActivity {
     private void rangeBoundaryProximity(float value,float minVal,float maxVal){
         if(value > maxVal || value < minVal){
             base.vibratePulse(500);
-        }else if(value >= maxVal*0.9f || value <= minVal*1.1f){
+        }else if(value >= maxVal*0.9f || value <= minVal*0.9f){
             base.vibratePulse(250);
         }
     }

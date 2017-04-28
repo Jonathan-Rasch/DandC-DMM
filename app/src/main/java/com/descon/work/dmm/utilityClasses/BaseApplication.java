@@ -75,7 +75,7 @@ public class BaseApplication extends Application {
                             return;
                         }
                         int mode= intent.getIntExtra(MessageCode.MODE,-1);
-                        if (mode != -1 && mode != MessageCode.FREQ_RESP_MODE && mode != MessageCode.SIG_GEN_MODE) {
+                        if (mode != -1 && mode != MessageCode.FREQ_RESP_MODE && mode != MessageCode.SIG_GEN_MODE && mode != MessageCode.DIODE_MODE) {
                             String message = "<m:"+String.valueOf(mode)+">";
                             connection.write(message.getBytes());
                             Log.d("wrote:",message);
@@ -101,6 +101,11 @@ public class BaseApplication extends Application {
                             String message = "<m: "+mode+" ;freq: "+signalFrequency+" ;ampl: "+signalAmplitude+" ;type: "+wavetype+" >";
                             connection.write(message.getBytes());
                             Log.d("wrote:",message);
+                        }else if (mode == MessageCode.DIODE_MODE){
+                            String type = intent.getStringExtra(MessageCode.DIODE_TYPE);
+                            String message = "<m: "+mode+" ;type: "+type+" >";
+                            connection.write(message.getBytes());
+                            Log.d("wrote:",message);
                         }
                     default:
                         break;
@@ -108,8 +113,6 @@ public class BaseApplication extends Application {
             }
         }
     };
-
-
 
     public Boolean getConnection_active() {
         if (connection != null) {
@@ -306,15 +309,17 @@ public class BaseApplication extends Application {
             case MessageCode.DIODE_MODE:
                 /*package uses the same format as all other <m:int;v:float;r:int;e:int>
                 * m: mode
-                * v: value of diode, correct diode gets determined via lookup table
-                * r: NOT USED*/
+                * v: DTM value of diode
+                * r: ZDT mode
+                * e: not used*/
                 intent_to_send = new Intent(MessageCode.PARSED_DIODE_VOLTAGE);
                 break;
             case MessageCode.CAPACITANCE_MODE:
                 /*package uses the same format as all other <m:int;v:float;r:int;e:int>
                 * m: mode
                 * v: float for capacitance value
-                * r: NOT USED*/
+                * r: NOT USED
+                * e: not used*/
                 intent_to_send = new Intent(MessageCode.PARSED_CAPACITANCE);
                 break;
             case MessageCode.LIGHT_INTENSITY_MODE:

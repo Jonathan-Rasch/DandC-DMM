@@ -38,8 +38,10 @@ public abstract class MessageCode {
     public static final String SIGGEN_SIGTYPE = "SIGGEN_SIGTYPE";
     public static final String SIGGEN_FREQ = "SIGGEN_FREQ";
     public static final String SIGGEN_AMPL = "SIGGEN_AMPL";
-    /*Misc extra data codes*/
-    public static final String TIMESTAMP = "TIMESTAMP";
+    /*codes for extra data in diode mode change request*/
+    public static final String DIODE_TYPE = "DIODE_TYPE";
+    public static final String DIODE_TYPE_DIODE = "DIODE";
+    public static final String DIODE_TYPE_ZENER = "ZENER";
 
     public static final int MSG_SOCKET_CONNECTION_FAILED = -1;
     public static final int MSG_SOCKET_RFCOM_FAILED = -2;
